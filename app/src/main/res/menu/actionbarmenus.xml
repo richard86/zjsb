@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:icon="@drawable/action_location_bar" android:id="@+id/action_location_bar" android:title="@string/action_location_title" app:showAsAction="always|withText" />
+    <item android:icon="@drawable/action_clear_bar" android:id="@+id/action_clear_bar" android:title="@string/action_clear_title" app:showAsAction="always|withText" />
+    <item android:icon="@drawable/action_measure_bar" android:id="@+id/action_measure_bar" android:title="@string/action_meatture_title" app:showAsAction="always|withText" />
+    <item android:icon="@drawable/action_ct_bar" android:id="@+id/action_ct_bar" android:title="@string/action_ct_title" app:showAsAction="always|withText" />
+    <item android:icon="@drawable/action_feature_bar" android:id="@+id/action_feature_bar" android:title="@string/action_feature_title" app:showAsAction="always|withText" />
+    <item android:icon="@drawable/action_layers_bar" android:id="@+id/action_layers_bar" android:title="@string/action_layers_title" app:showAsAction="always|withText" />
+</menu>

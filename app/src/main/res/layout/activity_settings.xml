@@ -1,0 +1,122 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="@drawable/sblue" >
+
+        
+        <ImageButton
+            android:id="@+id/btnback"
+            android:layout_width="18dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/back_btn" />
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/menu_settings"
+            android:textColor="#fff"
+            android:textSize="16sp"/>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:background="@color/white" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical" >
+
+            <!-- <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/server_address"
+                android:textColor="@color/blue"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/edittext_lanhost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:inputType="text"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="定时上传时间间隔(秒)"
+                android:textColor="@color/blue"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/edittext_duration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:inputType="number"
+                android:textColor="@color/black"
+                android:textSize="15dp" /> -->
+
+            <CheckBox
+                android:id="@+id/checkbox_remember"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/rember_psw"
+                android:textColor="@color/blue"
+                android:textSize="15dp" />
+
+            <!-- <Button
+                android:id="@+id/btn_clearData"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignLeft="@+id/btn_testNetWork"
+                android:layout_alignRight="@+id/btn_testNetWork"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/button_setting_blue"
+                android:text="清除数据" />
+
+            <Button
+                android:id="@+id/btn_testNetWork"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignRight="@+id/btn_setting"
+                android:layout_alignTop="@+id/radioGroup1"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_setting_blue"
+                android:text="网络测试" /> -->
+
+            <Button
+                android:id="@+id/btn_setting"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/button_setting_blue"
+                android:text="确认修改"
+                android:textColor="@color/white"
+                android:textSize="16dp" />
+        </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>
