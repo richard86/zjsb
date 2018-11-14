@@ -164,10 +164,10 @@ public class SDCardFileExplorerActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {//标题栏工具条Menu
-		if(item.getTitle().equals("设置工作目录")){
+		if(item.getTitle().equals("设置工程目录")){
 			try {
 				String workPathString=currentParent.getCanonicalPath();
-				String tagFileString=workPathString+"/地图目录.txt";
+				String tagFileString=workPathString+"/工程目录.prj";
 				if((new File(tagFileString)).exists()){
 					appData.setAppData("workPath", workPathString, this);
 					setResult(0);
@@ -175,7 +175,7 @@ public class SDCardFileExplorerActivity extends Activity {
 				}else {
 					AlertDialog.Builder builder = new AlertDialog.Builder(SDCardFileExplorerActivity.this);
 					builder.setTitle("提示")
-							.setMessage("工作目录设置出错，请重新选择工作目录！")
+							.setMessage("工程目录设置出错，请重新选择工程目录！")
 							.setIcon(R.drawable.icon)
 							.setPositiveButton("确定",new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int which) {

@@ -38,7 +38,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="14"
                 android:background="#00000000"
-                android:hint="请输入用户名"
+                android:hint="请输入项目号"
                 android:imeOptions="actionNext"
                 android:singleLine="true" />
         </LinearLayout>
@@ -67,6 +67,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="3"
                 android:background="#00000000"
+                android:hint="请输入密码"
+                android:imeOptions="actionNext"
                 android:inputType="textPassword" />
         </LinearLayout>
 
@@ -79,26 +81,27 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_weight="7"
-                android:orientation="vertical" >
+                android:layout_weight="10">
 
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_weight="3" >
+                    android:layout_weight="4" >
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_weight="2" >
+                    android:layout_weight="3" >
+                    <EditText
+                        android:id="@+id/edittext_pc"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="14"
+                        android:background="#00000000"
+                        android:hint="请输入批次"
+                        android:singleLine="true" />
 
-                    <Button
-                        android:id="@+id/button_login"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:background="#00000000" >
-                    </Button>
                 </LinearLayout>
             </LinearLayout>
 
@@ -115,6 +118,11 @@
                     android:layout_weight="3"
                     android:gravity="center"
                     android:orientation="vertical" >
+                    <Button
+                        android:id="@+id/button_login"
+                        android:layout_width="fill_parent"
+                        android:layout_height="89dp"
+                        android:background="#00000000"></Button>
                 </LinearLayout>
 
                 <LinearLayout
