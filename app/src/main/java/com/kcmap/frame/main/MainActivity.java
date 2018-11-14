@@ -24,7 +24,6 @@ import com.esri.android.map.ags.ArcGISLocalTiledLayer;
 import com.esri.android.runtime.ArcGISRuntime;
 import com.esri.core.geometry.MultiPath;
 import com.esri.core.geometry.Point;
-import com.esri.core.geometry.Polygon;
 import com.esri.core.geometry.Polyline;
 import com.esri.core.map.Graphic;
 import com.esri.core.symbol.SimpleLineSymbol;
