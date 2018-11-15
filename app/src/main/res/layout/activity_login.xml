@@ -95,13 +95,23 @@
                     android:layout_weight="3" >
                     <EditText
                         android:id="@+id/edittext_pc"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="14"
+                        android:layout_weight="2.9"
                         android:background="#00000000"
                         android:hint="请输入批次"
                         android:singleLine="true" />
-
+                    <Button
+                        android:id="@+id/button_pcSelect"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:background="#00000000"
+                        android:text="\@"
+                        android:textColor="@color/white"
+                        android:textSize="30dp"
+                        android:gravity="center"
+                        android:layout_weight="2.9
+                        "></Button>
                 </LinearLayout>
             </LinearLayout>
 

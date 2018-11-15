@@ -1,6 +1,7 @@
 package com.kcmap.frame.main;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,8 +22,11 @@ import com.kcmap.frame.ui.CustomDialog;
 import com.kcmap.frame.utils.AppManager;
 import com.kcmap.frame.utils.PermissionUtils;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class LoginActivity extends Activity {
@@ -30,8 +34,11 @@ public class LoginActivity extends Activity {
 	EditText txt_user;
 	EditText txt_pwd;
 	Button btn_login;
+	EditText edittext_pc;
+	Button button_pcSelect;
 	AppData appData;
-
+	String[] pcName;
+	File workingDirectory;
 	public static final String EXIST = "exist";
 	/** Called when the activity is first created. */
 	@Override
@@ -75,6 +82,79 @@ public class LoginActivity extends Activity {
 
 		btn_login = (Button) findViewById(R.id.button_login);
 		btn_login.setOnClickListener(new btnLoginLintener());
+
+
+		edittext_pc =(EditText) findViewById(R.id.edittext_pc);
+
+
+		//String workPathString = appData.getAppData("workPath", LoginActivity.this);
+		String workDirectory = appData.getAppData("workPath", LoginActivity.this);
+		workingDirectory = new File(workDirectory);// 工程目录
+
+		//------获取批次目录路径
+		String[] fileList=workingDirectory.list();
+		List<String> fileName = new ArrayList<>();
+		//File pcFolder=null;
+		int count = 0;
+		for(int f=0;f<fileList.length;f++){
+			if(fileList[f].endsWith("批次")){
+				//pcFolder=new File(workDirectory+File.separator+fileList[f]);
+				fileName.add(fileList[f]);
+				count++;
+				//break;
+			}
+		}
+
+
+		pcName =fileName.toArray(new String[fileName.size()]);
+
+
+
+
+
+
+		button_pcSelect =(Button)findViewById(R.id.button_pcSelect);
+		button_pcSelect.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				AlertDialog.Builder builder=new AlertDialog.Builder(LoginActivity.this);
+				builder.setTitle("选择检查批次");
+				builder.setSingleChoiceItems(pcName, -1,new DialogInterface.OnClickListener() {
+
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						dialog.cancel();
+
+
+						edittext_pc.setText(pcName[which]);
+
+					}
+				});
+				AlertDialog dialog=builder.create();
+				dialog.show();
+			}
+		});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 		//显示系统版本号
