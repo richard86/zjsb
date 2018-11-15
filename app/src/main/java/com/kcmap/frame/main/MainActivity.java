@@ -39,6 +39,7 @@ import java.io.FileFilter;
 public class MainActivity extends AppCompatActivity {
 
     String userName;
+    String dqPC;
     File workingDirectory;
     //样本tpk
     File[] tpkFileList;
@@ -68,21 +69,31 @@ public class MainActivity extends AppCompatActivity {
         userName = bundle.getString("userName");
 
         checkPerson = new String[]{"张三", "李四", "王五"};//检查人员
+        //--------------初始化控件
+        pcTextView = (TextView) findViewById(R.id.pcnum);
+        ybTextView = (TextView) findViewById(R.id.ybnum);
+        jcrTextView = (TextView) findViewById(R.id.jcry);
 
 
-        String workDirectory = bundle.getString("workPathString");
-        workingDirectory = new File(workDirectory);// 工程目录
+        //workingDirectory = new File(workDirectory);// 工程目录
 
         //------获取批次目录路径
-        String[] fileList = workingDirectory.list();
+        String workDirectory = bundle.getString("workPathString");
+        dqPC = bundle.getString("dqpc");//获取登录界面 所选的当前批次
+        pcTextView.setText("当前批次："+dqPC);
         File pcFolder = null;
+        pcFolder=new File(workDirectory+File.separator+dqPC);
+
+        /**
+        String[] fileList = workingDirectory.list();
+
         for (int f = 0; f < fileList.length; f++) {
             if (fileList[f].endsWith("批次")) {
                 pcFolder = new File(workDirectory + File.separator + fileList[f]);
                 break;
             }
         }
-
+        */
         if (pcFolder != null) {
             tpkFileList = pcFolder.listFiles(new FileFilter() {
                 @Override
@@ -99,10 +110,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout lllLayout = (LinearLayout) findViewById(R.id.infotab);
         lllLayout.getBackground().mutate().setAlpha(180);
 
-        //--------------初始化控件
-        pcTextView = (TextView) findViewById(R.id.pcnum);
-        ybTextView = (TextView) findViewById(R.id.ybnum);
-        jcrTextView = (TextView) findViewById(R.id.jcry);
+
 
         ImageView collectButton = (ImageView) findViewById(R.id.collect);
         collectButton.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +121,10 @@ public class MainActivity extends AppCompatActivity {
                 graphicsLayer.addGraphic(graphic);
 
                 Intent intent1 = new Intent(MainActivity.this, XcInfoMainActivity.class);
+                Bundle bundleXC = new Bundle();
+
+                bundleXC.putString("dqpc",dqPC);
+                intent1.putExtras(bundleXC);
                 startActivity(intent1);
 
             }

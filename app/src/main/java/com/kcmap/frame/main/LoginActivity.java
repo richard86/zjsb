@@ -216,7 +216,7 @@ public class LoginActivity extends Activity {
 
 			final String userName = txt_user.getText().toString();
 			final String userPwd = txt_pwd.getText().toString();
-
+			final String pc = edittext_pc.getText().toString();
 
 			//---------------------------------调试用，跳过服务
 			String workPathString = appData.getAppData("workPath", LoginActivity.this);
@@ -224,7 +224,7 @@ public class LoginActivity extends Activity {
 			Bundle bundleLogin = new Bundle();
 			bundleLogin.putString("userName", userName);
 			bundleLogin.putString("workPathString",workPathString);
-
+			bundleLogin.putString("dqpc",pc);
 			intent.putExtras(bundleLogin);
 			startActivity(intent);
 
