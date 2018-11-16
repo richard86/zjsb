@@ -2,6 +2,7 @@ package com.kcmap.frame.main;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,75 +14,52 @@ import com.kcmap.frame.work.DBHelper;
 
 import java.io.File;
 
-/**
- * Created by lizhiwei on 2018/11/13.
- */
-public class XcInfoDljdActivity extends Activity {
+public class activityTypeA extends Activity {
     private  String dqpc;
 
-    private Button button_YSCW_INSERT;
-    private EditText eText_YSLB;
+    private Button button_ZSZLA_INSERT;
+    private EditText eText_ZSZLA_CWMS;
     private  String workingDirectory;
     private  String dataBaseName = "AppTemplate.sqlite";
     AppData appData;
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_xcinfo_dljd);
+        setContentView(R.layout.activity_type_a);
+
+
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
 
         dqpc =bundle.getString("dqpc");
-        Toast.makeText(this, dqpc, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, dqpc, Toast.LENGTH_SHORT).show();
+
+
+        button_ZSZLA_INSERT= findViewById(R.id.button_ZSZLA_INSERT);
+        eText_ZSZLA_CWMS = findViewById(R.id.eText_ZSZLA_CWMS);
 
 
 
-        button_YSCW_INSERT= findViewById(R.id.button_YSCW_INSERT);
-        eText_YSLB = findViewById(R.id.eText_YSLB);
         appData = new AppData();
         workingDirectory= appData.getAppData("workPath", this);
         workingDirectory+=File.separator+dqpc;
+
+
+
         DBHelper dbHelper=new DBHelper(this, workingDirectory + File.separator + dataBaseName);
         dbHelper.open();
-        boolean a = dbHelper.isTableExist("XMInfo2");
+        boolean a = dbHelper.isTableExist("N5_Record");
         if(a)
         {
             //eText_YSLB.setText("数据库中存在 N5_Record 这张表！");
-            Toast.makeText(this, "数据库中存在 XMInfo2 这张表！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "数据库中存在 N5_Record 这张表！", Toast.LENGTH_LONG).show();
         }else{
-           // eText_YSLB.setText("数据库中meiyou N5_Record 这张表！");
-            Toast.makeText(this, "数据库中meiyou XMInfo2 这张表！", Toast.LENGTH_SHORT).show();
+            // eText_YSLB.setText("数据库中meiyou N5_Record 这张表！");
+            Toast.makeText(this, "数据库中meiyou N5_Record 这张表！", Toast.LENGTH_LONG).show();
         }
         dbHelper.closeclose();
 
 
-
-
-
-
-
-
-
-
     }
-
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
 }
