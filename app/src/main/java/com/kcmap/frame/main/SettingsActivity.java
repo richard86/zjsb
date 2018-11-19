@@ -51,8 +51,8 @@ public class SettingsActivity extends Activity{
 					appData.setAppData("RemPassWord", "true", SettingsActivity.this);
 				}else {
 					appData.setAppData("RemPassWord", "false", SettingsActivity.this);
-					appData.setAppData("userPassword", null, SettingsActivity.this);
-					appData.setAppData("userName", null, SettingsActivity.this);
+					appData.setAppData("PSW", null, SettingsActivity.this);
+					appData.setAppData("XMH", null, SettingsActivity.this);
 				}
 				SettingsActivity.this.finish();
 			}

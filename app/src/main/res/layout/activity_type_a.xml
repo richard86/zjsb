@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:id="@+id/activity_type_a"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,144 +9,139 @@
 
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="4"
         android:layout_gravity="center"
-        >
+        android:layout_weight="4"
+        android:orientation="vertical">
 
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            >
+            android:orientation="horizontal">
 
             <TextView
-                android:text="问题类型："
-                android:textColor="@color/black"
+                android:id="@+id/tView_ZSZLA_WTLX"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:id="@+id/tView_ZSZLA_WTLX"
                 android:layout_weight="1"
                 android:gravity="center"
-                />
+                android:text="问题类型："
+                android:textColor="@color/black" />
 
             <RadioGroup
+                android:id="@+id/radio_a"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
                 android:gravity="center"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <RadioButton
-                    android:text="图名图号"
-                    android:maxEms="3"
-                    android:textColor="@color/black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/rButton_ZSZLA_TMTH"
-                    android:layout_weight="1" />
-
-                <RadioButton
-                    android:text="图廓整饰"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:maxEms="3"
-                    android:textColor="@color/black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:text="图名图号"
+                    android:textColor="@color/black" />
+
+                <RadioButton
                     android:id="@+id/rButton_ZSZLA_TKZS"
-                    android:layout_weight="1" />
-
-                <RadioButton
-                    android:text="符号"
-                    android:textColor="@color/black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:maxEms="3"
+                    android:text="图廓整饰"
+                    android:textColor="@color/black" />
+
+                <RadioButton
                     android:id="@+id/rButton_ZSZLA_FH"
-                    android:layout_weight="1" />
-
-                <RadioButton
-                    android:text="线划"
-                    android:textColor="@color/black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="符号"
+                    android:textColor="@color/black" />
+
+                <RadioButton
                     android:id="@+id/rButton_ZSZLA_XH"
-                    android:layout_weight="1" />
-
-                <RadioButton
-                    android:text="注记"
-                    android:textColor="@color/black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="线划"
+                    android:textColor="@color/black" />
+
+                <RadioButton
                     android:id="@+id/rButton_ZSZLA_ZJ"
-                    android:layout_weight="1" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="注记"
+                    android:textColor="@color/black" />
             </RadioGroup>
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            >
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
 
                 <TextView
-                    android:text="错误描述："
-                    android:textColor="@color/black"
+                    android:id="@+id/tView_ZSZLA_CWMS"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tView_ZSZLA_CWMS"
                     android:layout_weight="1"
                     android:gravity="center"
-                    />
+                    android:text="错误描述："
+                    android:textColor="@color/black" />
             </LinearLayout>
+
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <EditText
-                    android:layout_width="wrap_content"
-                    android:textColor="@color/black"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
-                    android:ems="10"
                     android:id="@+id/eText_ZSZLA_CWMS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    />
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:textColor="@color/black" />
             </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
+        android:orientation="vertical"
 
         >
 
         <Button
-            android:text="录入"
+            android:id="@+id/button_ZSZLA_INSERT"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/button_ZSZLA_INSERT"
+            android:text="录入"
 
 
             />

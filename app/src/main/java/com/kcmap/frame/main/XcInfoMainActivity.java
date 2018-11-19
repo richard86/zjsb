@@ -19,21 +19,12 @@ import com.kcmap.frame.utils.AppManager;
  */
 public class XcInfoMainActivity extends TabActivity {
 
-    TabHost tabHost=null;
-    String dqPC;
+    TabHost tabHost;
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_xcinfo_main);
-
-        final Intent intentXcInfoMain = this.getIntent();
-        Bundle bundleXcInfoMain = intentXcInfoMain.getExtras();
-        dqPC = bundleXcInfoMain.getString("dqpc");
-
-
-
-
 
         AppManager.getAppManager().addActivity(this);
 
@@ -52,25 +43,12 @@ public class XcInfoMainActivity extends TabActivity {
         TabSpec spec;
         Intent intent;
 
-        Bundle bundleXCinfo;
-
-
-
-
         intent = new Intent(this,XcInfoDljdActivity.class);
-
-        bundleXCinfo = new Bundle();
-        bundleXCinfo.putString("dqpc",dqPC);
-
-        intent.putExtras(bundleXCinfo);
         spec = tabHost.newTabSpec("地理精度").setIndicator("地理精度").setContent(intent);
         tabHost.addTab(spec);
 
 
         intent = new Intent(this,XcInfoZszlActivity.class);
-        bundleXCinfo = new Bundle();
-        bundleXCinfo.putString("dqpc",dqPC);
-        intent.putExtras(bundleXCinfo);
         spec = tabHost.newTabSpec("整饰质量").setIndicator("整饰质量").setContent(intent);
         tabHost.addTab(spec);
 
@@ -87,7 +65,6 @@ public class XcInfoMainActivity extends TabActivity {
                 updateTab(tabHost);
             }
         });
-
 
     }
 

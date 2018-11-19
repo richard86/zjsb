@@ -29,6 +29,7 @@
             />
 
         <RadioGroup
+            android:id="@+id/errorclasstype"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
@@ -136,6 +137,7 @@
                     />
 
                 <RadioGroup
+                    android:id="@+id/yserrortype"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
@@ -231,15 +233,15 @@
                     />
 
                 <EditText
+                    android:id="@+id/eText_CWMC"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:inputType="textPersonName"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="50dp"
-                    android:hint="请输入错误名称"
+                    android:layout_weight="3"
                     android:ems="10"
-                    android:id="@+id/eText_CWMC"
-                    android:layout_weight="3" />
+                    android:hint="请输入错误名称"
+                    android:inputType="textPersonName" />
             </LinearLayout>
 
             <LinearLayout
@@ -260,6 +262,7 @@
                     />
 
                 <RadioGroup
+                    android:id="@+id/mcerrortype"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"

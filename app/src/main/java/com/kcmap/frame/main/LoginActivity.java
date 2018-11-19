@@ -31,11 +31,11 @@ import java.util.List;
 
 public class LoginActivity extends Activity {
 
-	EditText txt_user;
-	EditText txt_pwd;
+	EditText txt_XMH;
+	EditText txt_PSW;
+    EditText txt_PCH;
 	Button btn_login;
-	EditText edittext_pc;
-	Button button_pcSelect;
+	Button bth_pc;
 	AppData appData;
 	String[] pcName;
 	File workingDirectory;
@@ -71,91 +71,55 @@ public class LoginActivity extends Activity {
 			Intent mainIntent = new Intent(LoginActivity.this, SDCardFileExplorerActivity.class);
 			startActivityForResult(mainIntent, 0);
 		} else {//
+            String workDirectory = appData.getAppData("workPath", LoginActivity.this);
+            workingDirectory = new File(workDirectory);// 工程目录
+
+            //------获取批次目录路径
+            if(workDirectory.length()>0){
+                String[] fileList=workingDirectory.list();
+                List<String> fileName = new ArrayList<>();;
+                int count = 0;
+                for(int f=0;f<fileList.length;f++){
+                    if(fileList[f].endsWith("批次")){
+                        fileName.add(fileList[f]);
+                    }
+                }
+                pcName =fileName.toArray(new String[fileName.size()]);
+            }
+
+            bth_pc =(Button)findViewById(R.id.button_pcSelect);
+            bth_pc.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder builder=new AlertDialog.Builder(LoginActivity.this);
+                    builder.setTitle("选择检查批次");
+                    builder.setSingleChoiceItems(pcName, -1,new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            // TODO Auto-generated method stub
+                            dialog.cancel();
+                            txt_PCH.setText(pcName[which]);
+                        }
+                    });
+                    AlertDialog dialog=builder.create();
+                    dialog.show();
+                }
+            });
 
 		}
 
-		txt_user = (EditText) findViewById(R.id.edittext_username);
-		txt_pwd = (EditText) findViewById(R.id.edittext_password);
+		txt_XMH = (EditText) findViewById(R.id.edittext_username);
+		txt_PSW = (EditText) findViewById(R.id.edittext_password);
+        txt_PCH = (EditText) findViewById(R.id.edittext_pc);
 
-		txt_user.setText(appData.getAppData("userName", this));
-		txt_pwd.setText(appData.getAppData("userPassword", this));
+        if (appData.getAppData("RemPassWord", this).equalsIgnoreCase("true")){
+            txt_XMH.setText(appData.getAppData("XMH", this));
+            txt_PSW.setText(appData.getAppData("PSW", this));
+            txt_PCH.setText(appData.getAppData("PCH", this));
+        }
 
 		btn_login = (Button) findViewById(R.id.button_login);
-		btn_login.setOnClickListener(new btnLoginLintener());
-
-
-		edittext_pc =(EditText) findViewById(R.id.edittext_pc);
-
-
-		//String workPathString = appData.getAppData("workPath", LoginActivity.this);
-		String workDirectory = appData.getAppData("workPath", LoginActivity.this);
-		workingDirectory = new File(workDirectory);// 工程目录
-
-		//------获取批次目录路径
-		String[] fileList=workingDirectory.list();
-		List<String> fileName = new ArrayList<>();
-		//File pcFolder=null;
-		int count = 0;
-		for(int f=0;f<fileList.length;f++){
-			if(fileList[f].endsWith("批次")){
-				//pcFolder=new File(workDirectory+File.separator+fileList[f]);
-				fileName.add(fileList[f]);
-				count++;
-				//break;
-			}
-		}
-
-
-		pcName =fileName.toArray(new String[fileName.size()]);
-
-
-
-
-
-
-		button_pcSelect =(Button)findViewById(R.id.button_pcSelect);
-		button_pcSelect.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				AlertDialog.Builder builder=new AlertDialog.Builder(LoginActivity.this);
-				builder.setTitle("选择检查批次");
-				builder.setSingleChoiceItems(pcName, -1,new DialogInterface.OnClickListener() {
-
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						dialog.cancel();
-
-
-						edittext_pc.setText(pcName[which]);
-
-					}
-				});
-				AlertDialog dialog=builder.create();
-				dialog.show();
-			}
-		});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		btn_login.setOnClickListener(btnLoginListener);
 
 		//显示系统版本号
 		String versionName=getAppInfo();
@@ -168,7 +132,41 @@ public class LoginActivity extends Activity {
 		if (requestCode == 0) {
 			if (resultCode == 0) {
 
+                String workDirectory = appData.getAppData("workPath", LoginActivity.this);
+                workingDirectory = new File(workDirectory);// 工程目录
 
+                //------获取批次目录路径
+                if(workDirectory.length()>0){
+                    String[] fileList=workingDirectory.list();
+                    List<String> fileName = new ArrayList<>();
+                    int count = 0;
+                    for(int f=0;f<fileList.length;f++){
+                        if(fileList[f].endsWith("批次")){
+                            fileName.add(fileList[f]);
+                        }
+                    }
+                    pcName =fileName.toArray(new String[fileName.size()]);
+                }
+
+                bth_pc =(Button)findViewById(R.id.button_pcSelect);
+                bth_pc.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AlertDialog.Builder builder=new AlertDialog.Builder(LoginActivity.this);
+                        builder.setTitle("选择检查批次");
+                        builder.setSingleChoiceItems(pcName, -1,new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int which) {
+                                // TODO Auto-generated method stub
+                                dialog.cancel();
+                                txt_PCH.setText(pcName[which]);
+                                appData.setAppData("PCH",pcName[which],LoginActivity.this);
+                            }
+                        });
+                        AlertDialog dialog=builder.create();
+                        dialog.show();
+                    }
+                });
 			}
 		}
 	}
@@ -190,47 +188,40 @@ public class LoginActivity extends Activity {
 		try {
 			String pkName = this.getPackageName();
 			String versionName = this.getPackageManager().getPackageInfo(pkName, 0).versionName;
-			// 			int versionCode = this.getPackageManager().getPackageInfo(pkName, 0).versionCode;
+			//int versionCode = this.getPackageManager().getPackageInfo(pkName, 0).versionCode;
 			return "v" + versionName;
 		} catch (Exception e) {
 		}
 		return null;
 	}
 
-	private class btnLoginLintener implements OnClickListener {
-		public void onClick(View v) {
+	View.OnClickListener btnLoginListener= new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (txt_XMH.getText().toString().equals("") || txt_XMH.getText().toString() == null) {
+                Toast.makeText(getApplicationContext(), "请输入项目号", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (appData.getAppData("RemPassWord", LoginActivity.this).equalsIgnoreCase("true")) {
+                appData.setAppData("XMH", txt_XMH.getText().toString(), LoginActivity.this);
+                appData.setAppData("PSW", txt_PSW.getText().toString(), LoginActivity.this);
+                appData.setAppData("PCH", txt_PCH.getText().toString(), LoginActivity.this);
 
-			if (txt_user.getText().toString().equals("") || txt_user.getText().toString() == null) {
-				Toast.makeText(getApplicationContext(), "请输入用户名", Toast.LENGTH_SHORT).show();
-				return;
-			}
+            }else {
+                appData.setAppData("XMH", null, LoginActivity.this);
+                appData.setAppData("PSW", null, LoginActivity.this);
+                appData.setAppData("PCH", null, LoginActivity.this);
+            }
 
+            final String XMH = txt_XMH.getText().toString();
+            final String PSW = txt_PSW.getText().toString();
+            final String PCH = txt_PCH.getText().toString();
 
-			if (appData.getAppData("RemPassWord", LoginActivity.this).equalsIgnoreCase("true")) {
-				appData.setAppData("userPassword", txt_pwd.getText().toString(), LoginActivity.this);
-				appData.setAppData("userName", txt_user.getText().toString(), LoginActivity.this);
-			}else {
-				appData.setAppData("userPassword", null, LoginActivity.this);
-				appData.setAppData("userName", null, LoginActivity.this);
-			}
-
-			final String userName = txt_user.getText().toString();
-			final String userPwd = txt_pwd.getText().toString();
-			final String pc = edittext_pc.getText().toString();
-
-			//---------------------------------调试用，跳过服务
-			String workPathString = appData.getAppData("workPath", LoginActivity.this);
-			Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-			Bundle bundleLogin = new Bundle();
-			bundleLogin.putString("userName", userName);
-			bundleLogin.putString("workPathString",workPathString);
-			bundleLogin.putString("dqpc",pc);
-			intent.putExtras(bundleLogin);
-			startActivity(intent);
-
-		}
-	}
-
+            //---------------------------------调试用，跳过验证
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+    };
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

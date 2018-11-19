@@ -34,45 +34,45 @@
                 />
 
             <RadioGroup
+                android:id="@+id/radio_c"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
                 android:gravity="center"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <RadioButton
-                    android:text="图廓整饰"
-
-                    android:textColor="@color/black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/rButton_ZSZLC_TKZS"
-                    android:layout_weight="1" />
 
-                <RadioButton
-                    android:text="符号"
-                    android:textColor="@color/black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="图廓整饰"
+                    android:textColor="@color/black" />
+
+                <RadioButton
                     android:id="@+id/rButton_ZSZLC_FH"
-                    android:layout_weight="1" />
-
-                <RadioButton
-                    android:text="线划"
-                    android:textColor="@color/black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="符号"
+                    android:textColor="@color/black" />
+
+                <RadioButton
                     android:id="@+id/rButton_ZSZLC_XH"
-                    android:layout_weight="1" />
-
-                <RadioButton
-                    android:text="注记"
-                    android:textColor="@color/black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="线划"
+                    android:textColor="@color/black" />
+
+                <RadioButton
                     android:id="@+id/rButton_ZSZLC_ZJ"
-                    android:layout_weight="1" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="注记"
+                    android:textColor="@color/black" />
             </RadioGroup>
         </LinearLayout>
 

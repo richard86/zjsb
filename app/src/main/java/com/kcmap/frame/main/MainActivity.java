@@ -1,12 +1,15 @@
 package com.kcmap.frame.main;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.Layer;
@@ -30,16 +34,19 @@ import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol.STYLE;
 import com.kcmap.frame.R;
+import com.kcmap.frame.appData.AppData;
 import com.kcmap.frame.utils.AppManager;
+import com.kcmap.frame.work.DBHelper;
+import com.kcmap.frame.work.UtilTool;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.lang.reflect.Field;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    String userName;
-    String dqPC;
+    AppData appData;
     File workingDirectory;
     //样本tpk
     File[] tpkFileList;
@@ -47,9 +54,12 @@ public class MainActivity extends AppCompatActivity {
     String[] checkPerson;
     MapView mMapView;
 
-    TextView pcTextView;
-    TextView ybTextView;
-    TextView jcrTextView;
+    TextView txt_XMH;
+    TextView txt_PCH;
+    TextView txt_YBH;
+    TextView txt_JCR;
+
+    DBHelper dbHelper;
 
 
     GraphicsLayer graphicsLayer;
@@ -63,37 +73,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AppManager.getAppManager().addActivity(this);
 
+        appData = new AppData();
         // --------------------------------------初始化工程目录
-        final Intent intent = this.getIntent();
-        Bundle bundle = intent.getExtras();
-        userName = bundle.getString("userName");
+        //------获取工程目录
+        String workDirectory = appData.getAppData("workPath",MainActivity.this);
+        //------获取项目信息
+        String XMH=appData.getAppData("XMH",MainActivity.this);
+        String PCH = appData.getAppData("PCH",MainActivity.this);
 
         checkPerson = new String[]{"张三", "李四", "王五"};//检查人员
         //--------------初始化控件
-        pcTextView = (TextView) findViewById(R.id.pcnum);
-        ybTextView = (TextView) findViewById(R.id.ybnum);
-        jcrTextView = (TextView) findViewById(R.id.jcry);
-
-
-        //workingDirectory = new File(workDirectory);// 工程目录
-
-        //------获取批次目录路径
-        String workDirectory = bundle.getString("workPathString");
-        dqPC = bundle.getString("dqpc");//获取登录界面 所选的当前批次
-        pcTextView.setText("当前批次："+dqPC);
-        File pcFolder = null;
-        pcFolder=new File(workDirectory+File.separator+dqPC);
-
-        /**
-        String[] fileList = workingDirectory.list();
-
-        for (int f = 0; f < fileList.length; f++) {
-            if (fileList[f].endsWith("批次")) {
-                pcFolder = new File(workDirectory + File.separator + fileList[f]);
-                break;
-            }
+        txt_XMH = (TextView) findViewById(R.id.xmnum);
+        txt_XMH.setText("项目号："+XMH);
+        txt_PCH = (TextView) findViewById(R.id.pcnum);
+        txt_PCH.setText("当前批次："+PCH);
+        txt_YBH = (TextView) findViewById(R.id.ybnum);
+        String YBH=appData.getAppData("YBH",MainActivity.this);
+        if(YBH.length()>0){
+            txt_YBH.setText("当前样本："+YBH);
         }
-        */
+        txt_JCR = (TextView) findViewById(R.id.jcry);
+
+        File pcFolder=new File(workDirectory+File.separator+PCH);
+
         if (pcFolder != null) {
             tpkFileList = pcFolder.listFiles(new FileFilter() {
                 @Override
@@ -110,8 +112,6 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout lllLayout = (LinearLayout) findViewById(R.id.infotab);
         lllLayout.getBackground().mutate().setAlpha(180);
 
-
-
         ImageView collectButton = (ImageView) findViewById(R.id.collect);
         collectButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,12 +120,10 @@ public class MainActivity extends AppCompatActivity {
                 Graphic graphic = new Graphic(centerPoint, new SimpleMarkerSymbol(Color.RED, 9, STYLE.CIRCLE));
                 graphicsLayer.addGraphic(graphic);
 
-                Intent intent1 = new Intent(MainActivity.this, XcInfoMainActivity.class);
-                Bundle bundleXC = new Bundle();
-
-                bundleXC.putString("dqpc",dqPC);
-                intent1.putExtras(bundleXC);
-                startActivity(intent1);
+                Intent intent = new Intent(MainActivity.this, XcInfoMainActivity.class);
+                appData.setAppData("X", String.valueOf(centerPoint.getX()),MainActivity.this);
+                appData.setAppData("Y", String.valueOf(centerPoint.getY()),MainActivity.this);
+                startActivity(intent);
 
             }
         });
@@ -138,14 +136,23 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < tpkFileList.length; i++) {
                 tpkName[i] = tpkFileList[i].getName().substring(0, tpkFileList[i].getName().indexOf(".tpk"));
             }
-            LoadLocalTiledMapService(mMapView, "file://" + tpkFileList[0].getAbsolutePath(), 0);
+            if(YBH.length()>0){
+                LoadLocalTiledMapService(mMapView, "file://" + pcFolder.getAbsolutePath()+File.separator+YBH+".tpk", 0);
+                txt_YBH.setText("当前样本：" + YBH);
+            }else{
+                LoadLocalTiledMapService(mMapView, "file://" + tpkFileList[0].getAbsolutePath(), 0);
+                txt_YBH.setText("当前样本：" + tpkName[0]);
+            }
+
             graphicsLayer = new GraphicsLayer();
             mMapView.addLayer(graphicsLayer);
             linegraphicsLayer = new GraphicsLayer();
             mMapView.addLayer(linegraphicsLayer);
             tempGraphicLayer = new GraphicsLayer();
             mMapView.addLayer(tempGraphicLayer);
-            ybTextView.setText("当前样本：" + tpkName[0]);
+
+            String dbPath=UtilTool.getDBPath(MainActivity.this);
+            dbHelper=new DBHelper(MainActivity.this,dbPath);
         }
     }
 
@@ -177,8 +184,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (poly.getPointCount() == 2) {
-                poly = null;
-                tempGraphicLayer.removeAll();
+
                 showLineDistanceDialog(MainActivity.this);
             }
         }
@@ -199,9 +205,9 @@ public class MainActivity extends AppCompatActivity {
         tv.setTextAppearance(ctx, android.R.style.TextAppearance_Medium);
         //layout.addView(tv);
 
-        EditText et;
-        et = new EditText(ctx);
+        final EditText et = new EditText(ctx);
         // et.setLayoutParams(lp);
+        et.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);//只能输入数字和小数点
         et.setSingleLine(true);
         et.setTextAppearance(ctx, android.R.style.TextAppearance_Medium);
         // et.setTextColor(0xFFFFFFFF);
@@ -211,17 +217,57 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
         builder.setView(sv).setTitle("记录实测距离（米）").setPositiveButton("保存", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(DialogInterface dialog, int i) {
 
+                if(et.getText().toString().length()>0){
+                    dbHelper.open();
+
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put("XMH", UtilTool.getXMH(MainActivity.this));
+                    contentValues.put("PCH", UtilTool.getPCH(MainActivity.this));
+                    contentValues.put("YBH", UtilTool.getYBH(MainActivity.this));
+                    contentValues.put("X0",poly.getPoint(0).getX());
+                    contentValues.put("Y0",poly.getPoint(0).getY());
+                    contentValues.put("X1",poly.getPoint(1).getX());
+                    contentValues.put("Y1",poly.getPoint(1).getY());
+                    contentValues.put("Length",et.getText().toString());
+                    dbHelper.insert("N6_Record", contentValues);
+
+                    dbHelper.closeclose();
+
+                    poly = null;
+                    tempGraphicLayer.removeAll();
+                    // ------------------------------------
+                    try {
+                        Field field = dialog.getClass().getSuperclass().getDeclaredField("mShowing");
+                        field.setAccessible(true);
+                        field.set(dialog, true); // true -
+                        // 使之可以关闭(此为机关所在，其它语句相同)
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    Toast.makeText(MainActivity.this,"请输入实测距离！",Toast.LENGTH_SHORT).show();
+                    // 条件不成立不能关闭 AlertDialog 窗口
+                    Toast.makeText(MainActivity.this, "类型编码不能为空！", Toast.LENGTH_LONG).show();
+                    try {
+                        Field field = dialog.getClass().getSuperclass().getDeclaredField("mShowing");
+                        field.setAccessible(true);
+                        field.set(dialog, false); // false -
+                        // 使之不能关闭(此为机关所在，其它语句相同)
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }).setNegativeButton("删除", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 linegraphicsLayer.removeGraphic(graphicID);
+                poly = null;
+                tempGraphicLayer.removeAll();
             }
         }).create().show();
-
-
     }
 
     @Override
@@ -243,8 +289,11 @@ public class MainActivity extends AppCompatActivity {
                     dialog.cancel();
                     removeBaseMap(mMapView);
                     String baseMapUrl = "file://" + tpkFileList[which].getAbsolutePath();
-                    ybTextView.setText("当前样本：" + tpkName[which]);
+                    txt_YBH.setText("当前样本：" + tpkName[which]);
+                    appData.setAppData("YBH",tpkName[which],MainActivity.this);
                     LoadLocalTiledMapService(mMapView, baseMapUrl, 0);
+                    String dbPath=UtilTool.getDBPath(MainActivity.this);
+                    dbHelper=new DBHelper(MainActivity.this,dbPath);
                 }
             });
             AlertDialog dialog = builder.create();
@@ -258,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     // TODO Auto-generated method stub
                     dialog.cancel();
-                    jcrTextView.setText("检查人：" + checkPerson[which]);
+                    txt_JCR.setText("检查人：" + checkPerson[which]);
                 }
             });
             AlertDialog dialog = builder.create();

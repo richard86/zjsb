@@ -39,6 +39,7 @@
                 android:layout_weight="14"
                 android:background="#00000000"
                 android:hint="请输入项目号"
+                android:textColor="@color/white"
                 android:imeOptions="actionNext"
                 android:singleLine="true" />
         </LinearLayout>
@@ -68,6 +69,7 @@
                 android:layout_weight="3"
                 android:background="#00000000"
                 android:hint="请输入密码"
+                android:textColor="@color/white"
                 android:imeOptions="actionNext"
                 android:inputType="textPassword" />
         </LinearLayout>
@@ -100,6 +102,7 @@
                         android:layout_weight="2.9"
                         android:background="#00000000"
                         android:hint="请输入批次"
+                        android:textColor="@color/white"
                         android:singleLine="true" />
                     <Button
                         android:id="@+id/button_pcSelect"
