@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +22,7 @@ import com.kcmap.frame.appData.AppData;
 import com.kcmap.frame.ui.CustomDialog;
 import com.kcmap.frame.utils.AppManager;
 import com.kcmap.frame.utils.PermissionUtils;
+import com.kcmap.frame.work.DBHelper;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -202,24 +204,41 @@ public class LoginActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "请输入项目号", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (appData.getAppData("RemPassWord", LoginActivity.this).equalsIgnoreCase("true")) {
-                appData.setAppData("XMH", txt_XMH.getText().toString(), LoginActivity.this);
-                appData.setAppData("PSW", txt_PSW.getText().toString(), LoginActivity.this);
-                appData.setAppData("PCH", txt_PCH.getText().toString(), LoginActivity.this);
-
-            }else {
-                appData.setAppData("XMH", null, LoginActivity.this);
-                appData.setAppData("PSW", null, LoginActivity.this);
-                appData.setAppData("PCH", null, LoginActivity.this);
-            }
+			if (txt_PSW.getText().toString().equals("") || txt_PSW.getText().toString() == null) {
+				Toast.makeText(getApplicationContext(), "请输入密码", Toast.LENGTH_SHORT).show();
+				return;
+			}
+			if (txt_PCH.getText().toString().equals("") || txt_PCH.getText().toString() == null) {
+				Toast.makeText(getApplicationContext(), "请选择批次", Toast.LENGTH_SHORT).show();
+				return;
+			}
+            appData.setAppData("XMH", txt_XMH.getText().toString(), LoginActivity.this);
+            appData.setAppData("PSW", txt_PSW.getText().toString(), LoginActivity.this);
+            appData.setAppData("PCH", txt_PCH.getText().toString(), LoginActivity.this);
 
             final String XMH = txt_XMH.getText().toString();
             final String PSW = txt_PSW.getText().toString();
             final String PCH = txt_PCH.getText().toString();
 
             //---------------------------------调试用，跳过验证
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
+            DBHelper dbHelper=new DBHelper(LoginActivity.this,workingDirectory.getAbsolutePath()+File.separator+PCH+File.separator+"AppTemplate.sqlite");
+
+			dbHelper.open();
+			Cursor returnCursor = dbHelper.findList("XMConfig", new String[] { "XMH", "Password" }, "XMH = ?",
+					new String[] { XMH }, null, null, null);
+			if (returnCursor.moveToNext()) {
+				String psw = returnCursor.getString(returnCursor.getColumnIndex("Password"));
+				if(psw.equalsIgnoreCase(PSW)){
+					Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+					startActivity(intent);
+				}else{
+                    Toast.makeText(LoginActivity.this, "请输入正确的项目号和密码！", Toast.LENGTH_SHORT).show();
+                }
+			}else {
+				Toast.makeText(LoginActivity.this, "请输入正确的项目号和密码！", Toast.LENGTH_SHORT).show();
+			}
+			dbHelper.closeclose();
+
         }
     };
 

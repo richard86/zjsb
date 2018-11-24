@@ -19,11 +19,11 @@ import java.io.File;
 public class activityTypeD extends Activity {
 
     String WTDM;
-    String pre_WTMS;
     String WTMS;
     DBHelper dbHelper;
     RadioGroup radio_d;
     AppData appData;
+    EditText eText_ZSZLD_CWMS;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +34,8 @@ public class activityTypeD extends Activity {
         String dbPath=UtilTool.getDBPath(this);
         dbHelper=new DBHelper(this,dbPath);
 
+        eText_ZSZLD_CWMS=(EditText)findViewById(R.id.eText_ZSZLD_CWMS);
+        eText_ZSZLD_CWMS.setEnabled(false);
         radio_d=(RadioGroup)findViewById(R.id.radio_d);
         radio_d.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -47,7 +49,7 @@ public class activityTypeD extends Activity {
                 }else if(checkID==R.id.rButton_ZSZLD_ZJWZ){
                     WTMS="注记位置不合理";
                 }
-
+                eText_ZSZLD_CWMS.setText(WTMS);
             }
         });
 
@@ -58,15 +60,6 @@ public class activityTypeD extends Activity {
                 if(WTMS.length()==0){
                     Toast.makeText(activityTypeD.this, "请选择【问题类型】！", Toast.LENGTH_SHORT).show();
                     return;
-                }
-
-                EditText eText_ZSZLD_CWMS=(EditText)findViewById(R.id.eText_ZSZLD_CWMS);
-                pre_WTMS=eText_ZSZLD_CWMS.getText().toString();
-                if(pre_WTMS.length()==0){
-                    Toast.makeText(activityTypeD.this, "请填写【问题描述】！", Toast.LENGTH_SHORT).show();
-                    return;
-                }else{
-                    WTMS=pre_WTMS+WTMS;
                 }
 
                 dbHelper.open();
@@ -89,7 +82,8 @@ public class activityTypeD extends Activity {
                 Toast.makeText(activityTypeD.this, WTMS+"|"+WTDM, Toast.LENGTH_SHORT).show();
 
                 //----恢复控件
-                eText_ZSZLD_CWMS.setText(pre_WTMS=WTMS="");
+                WTMS="";
+                eText_ZSZLD_CWMS.setText("");
                 WTDM="40D";
                 radio_d.check(-1);
 

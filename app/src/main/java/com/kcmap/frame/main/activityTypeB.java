@@ -19,10 +19,10 @@ import java.io.File;
 public class activityTypeB extends Activity {
 
     String WTDM;
-    String pre_WTMS;
     String WTMS;
     DBHelper dbHelper;
     RadioGroup radio_b;
+    EditText eText_ZSZLB_CWMS;
     AppData appData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +34,8 @@ public class activityTypeB extends Activity {
         String dbPath=UtilTool.getDBPath(this);
         dbHelper=new DBHelper(this,dbPath);
 
+        eText_ZSZLB_CWMS=(EditText)findViewById(R.id.eText_ZSZLB_CWMS);
+        eText_ZSZLB_CWMS.setEnabled(false);
         radio_b=(RadioGroup)findViewById(R.id.radio_b);
         radio_b.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -51,7 +53,7 @@ public class activityTypeB extends Activity {
                 }else if(checkID==R.id.rButton_ZSZLB_ZJ){
                     WTMS="注记规格明显严重不符要求";
                 }
-
+                eText_ZSZLB_CWMS.setText(WTMS);
             }
         });
 
@@ -62,15 +64,6 @@ public class activityTypeB extends Activity {
                 if(WTMS.length()==0){
                     Toast.makeText(activityTypeB.this, "请选择【问题类型】！", Toast.LENGTH_SHORT).show();
                     return;
-                }
-
-                EditText eText_ZSZLB_CWMS=(EditText)findViewById(R.id.eText_ZSZLB_CWMS);
-                pre_WTMS=eText_ZSZLB_CWMS.getText().toString();
-                if(pre_WTMS.length()==0){
-                    Toast.makeText(activityTypeB.this, "请填写【问题描述】！", Toast.LENGTH_SHORT).show();
-                    return;
-                }else{
-                    WTMS=pre_WTMS+WTMS;
                 }
 
                 dbHelper.open();
@@ -93,7 +86,8 @@ public class activityTypeB extends Activity {
                 Toast.makeText(activityTypeB.this, WTMS+"|"+WTDM, Toast.LENGTH_SHORT).show();
 
                 //----恢复控件
-                eText_ZSZLB_CWMS.setText(pre_WTMS=WTMS="");
+                WTMS="";
+                eText_ZSZLB_CWMS.setText("");
                 WTDM="40B";
                 radio_b.check(-1);
 

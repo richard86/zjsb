@@ -19,9 +19,9 @@ import java.io.File;
 public class activityTypeC extends Activity {
 
     String WTDM;
-    String pre_WTMS;
     String WTMS;
     DBHelper dbHelper;
+    EditText eText_ZSZLC_CWMS;
     RadioGroup radio_c;
     AppData appData;
     @Override
@@ -33,7 +33,8 @@ public class activityTypeC extends Activity {
         WTMS="";
         String dbPath=UtilTool.getDBPath(this);
         dbHelper=new DBHelper(this,dbPath);
-
+        eText_ZSZLC_CWMS=(EditText)findViewById(R.id.eText_ZSZLC_CWMS);
+        eText_ZSZLC_CWMS.setEnabled(false);
         radio_c=(RadioGroup)findViewById(R.id.radio_c);
         radio_c.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -47,7 +48,7 @@ public class activityTypeC extends Activity {
                 }else if(checkID==R.id.rButton_ZSZLC_ZJ){
                     WTMS="注记规格不符要求";
                 }
-
+                eText_ZSZLC_CWMS.setText(WTMS);
             }
         });
 
@@ -58,15 +59,6 @@ public class activityTypeC extends Activity {
                 if(WTMS.length()==0){
                     Toast.makeText(activityTypeC.this, "请选择【问题类型】！", Toast.LENGTH_SHORT).show();
                     return;
-                }
-
-                EditText eText_ZSZLC_CWMS=(EditText)findViewById(R.id.eText_ZSZLC_CWMS);
-                pre_WTMS=eText_ZSZLC_CWMS.getText().toString();
-                if(pre_WTMS.length()==0){
-                    Toast.makeText(activityTypeC.this, "请填写【问题描述】！", Toast.LENGTH_SHORT).show();
-                    return;
-                }else{
-                    WTMS=pre_WTMS+WTMS;
                 }
 
                 dbHelper.open();
@@ -89,7 +81,8 @@ public class activityTypeC extends Activity {
                 Toast.makeText(activityTypeC.this, WTMS+"|"+WTDM, Toast.LENGTH_SHORT).show();
 
                 //----恢复控件
-                eText_ZSZLC_CWMS.setText(pre_WTMS=WTMS="");
+                WTMS="";
+                eText_ZSZLC_CWMS.setText("");
                 WTDM="40C";
                 radio_c.check(-1);
 

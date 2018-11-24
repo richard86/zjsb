@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                     contentValues.put("X1",poly.getPoint(1).getX());
                     contentValues.put("Y1",poly.getPoint(1).getY());
                     contentValues.put("Length",et.getText().toString());
-                    dbHelper.insert("N6_Record", contentValues);
+                    dbHelper.insert("N7_Record", contentValues);
 
                     dbHelper.closeclose();
 
