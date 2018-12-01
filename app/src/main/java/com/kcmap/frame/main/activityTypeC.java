@@ -14,8 +14,6 @@ import com.kcmap.frame.appData.AppData;
 import com.kcmap.frame.work.DBHelper;
 import com.kcmap.frame.work.UtilTool;
 
-import java.io.File;
-
 public class activityTypeC extends Activity {
 
     String WTDM;
@@ -76,7 +74,7 @@ public class activityTypeC extends Activity {
 
                 dbHelper.insert("N5_Record", contentValues);
 
-                dbHelper.closeclose();
+                dbHelper.close();
 
                 Toast.makeText(activityTypeC.this, WTMS+"|"+WTDM, Toast.LENGTH_SHORT).show();
 

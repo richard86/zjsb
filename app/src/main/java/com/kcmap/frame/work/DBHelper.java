@@ -44,16 +44,16 @@ public class DBHelper {
         return this;  
     }  
   
-    public void closeclose() {  
+    public void close() {
           
         mDb.close();  
         mDbHelper.close();  
     }  
   
     /** 
-     * ²åÈëÊı¾İ 
-     * ²ÎÊı£ºtableName ±íÃû 
-     * initialValues Òª²åÈëµÄÁĞ¶ÔÓ¦Öµ 
+     * æ’å…¥æ•°æ® 
+     * å‚æ•°ï¼štableName è¡¨å 
+     * initialValues è¦æ’å…¥çš„åˆ—å¯¹åº”å€¼ 
      *   */  
     public long insert(String tableName,ContentValues initialValues) {  
           
@@ -62,10 +62,10 @@ public class DBHelper {
   
       
     /** 
-     * É¾³ıÊı¾İ 
-     * ²ÎÊı£ºtableName ±íÃû 
-     * deleteCondition É¾³ıµÄÌõ¼ş 
-     * deleteArgs Èç¹ûdeleteConditionÖĞÓĞ¡°£¿¡±ºÅ£¬½«ÓÃ´ËÊı×éÖĞµÄÖµÌæ»» 
+     * åˆ é™¤æ•°æ® 
+     * å‚æ•°ï¼štableName è¡¨å 
+     * deleteCondition åˆ é™¤çš„æ¡ä»¶ 
+     * deleteArgs å¦‚æœdeleteConditionä¸­æœ‰â€œï¼Ÿâ€å·ï¼Œå°†ç”¨æ­¤æ•°ç»„ä¸­çš„å€¼æ›¿æ¢ 
      *   */  
     public boolean delete(String tableName,String deleteCondition,String[] deleteArgs) {  
           
@@ -74,11 +74,11 @@ public class DBHelper {
       
       
     /** 
-     * ¸üĞÂÊı¾İ 
-     * ²ÎÊı£ºtableName ±íÃû 
-     * initialValues Òª¸üĞÂµÄÁĞ 
-     * selection ¸üĞÂµÄÌõ¼ş 
-     * selectArgs Èç¹ûselectionÖĞÓĞ¡°£¿¡±ºÅ£¬½«ÓÃ´ËÊı×éÖĞµÄÖµÌæ»» 
+     * æ›´æ–°æ•°æ® 
+     * å‚æ•°ï¼štableName è¡¨å 
+     * initialValues è¦æ›´æ–°çš„åˆ— 
+     * selection æ›´æ–°çš„æ¡ä»¶ 
+     * selectArgs å¦‚æœselectionä¸­æœ‰â€œï¼Ÿâ€å·ï¼Œå°†ç”¨æ­¤æ•°ç»„ä¸­çš„å€¼æ›¿æ¢ 
      *   */  
     public boolean update(String tableName,ContentValues initialValues,String selection,String[] selectArgs) {  
         int returnValue = mDb.update(tableName, initialValues, selection, selectArgs);  
@@ -87,11 +87,11 @@ public class DBHelper {
     }  
   
     /** 
-     * È¡µÃÒ»¸öÁĞ±í 
-     * ²ÎÊı£ºtableName ±íÃû 
-     * columns ·µ»ØµÄÁĞ 
-     * selection ²éÑ¯Ìõ¼ş 
-     * selectArgs Èç¹ûselectionÖĞÓĞ¡°£¿¡±ºÅ£¬½«ÓÃ´ËÊı×éÖĞµÄÖµÌæ»» 
+     * å–å¾—ä¸€ä¸ªåˆ—è¡¨ 
+     * å‚æ•°ï¼štableName è¡¨å 
+     * columns è¿”å›çš„åˆ— 
+     * selection æŸ¥è¯¢æ¡ä»¶ 
+     * selectArgs å¦‚æœselectionä¸­æœ‰â€œï¼Ÿâ€å·ï¼Œå°†ç”¨æ­¤æ•°ç»„ä¸­çš„å€¼æ›¿æ¢ 
      *   */  
     public Cursor findList(String tableName,String[] columns,String selection,String[] selectionArgs,String groupBy,String having,String orderBy) {  
   
@@ -99,11 +99,11 @@ public class DBHelper {
     }  
   
     /** 
-     * È¡µÃµ¥ĞĞ¼ÇÂ¼ 
-     * ²ÎÊı£ºtableName ±íÃû 
-     * columns ·µ»ØµÄÁĞ 
-     * selection ²éÑ¯Ìõ¼ş 
-     * selectArgs Èç¹ûselectionÖĞÓĞ¡°£¿¡±ºÅ£¬½«ÓÃ´ËÊı×éÖĞµÄÖµÌæ»» 
+     * å–å¾—å•è¡Œè®°å½• 
+     * å‚æ•°ï¼štableName è¡¨å 
+     * columns è¿”å›çš„åˆ— 
+     * selection æŸ¥è¯¢æ¡ä»¶ 
+     * selectArgs å¦‚æœselectionä¸­æœ‰â€œï¼Ÿâ€å·ï¼Œå°†ç”¨æ­¤æ•°ç»„ä¸­çš„å€¼æ›¿æ¢ 
      *   */  
     public Cursor findInfo(String tableName,String[] columns,String selection,String[] selectionArgs,String groupBy,String having,String orderBy,String limit,boolean distinct) throws SQLException {  
   
@@ -118,8 +118,8 @@ public class DBHelper {
     }  
   
     /** 
-     * Ö´ĞĞsql 
-     * ²ÎÊı£ºsql ÒªÖ´ĞĞµÄsql 
+     * æ‰§è¡Œsql 
+     * å‚æ•°ï¼šsql è¦æ‰§è¡Œçš„sql 
       
      *   */  
     public void execSQL(String sql){  
@@ -128,8 +128,8 @@ public class DBHelper {
     }  
       
     /** 
-        * ÅĞ¶ÏÄ³ÕÅ±íÊÇ·ñ´æÔÚ 
-        * @param tabName ±íÃû 
+        * åˆ¤æ–­æŸå¼ è¡¨æ˜¯å¦å­˜åœ¨ 
+        * @param tableName è¡¨å
         * @return 
         */  
     public boolean isTableExist(String tableName){  
@@ -157,9 +157,9 @@ public class DBHelper {
            
           
             /** 
-            * ÅĞ¶ÏÄ³ÕÅ±íÖĞÊÇ·ñ´æÔÚÄ³×Ö¶Î(×¢£¬¸Ã·½·¨ÎŞ·¨ÅĞ¶Ï±íÊÇ·ñ´æÔÚ£¬Òò´ËÓ¦ÓëisTableExistÒ»ÆğÊ¹ÓÃ) 
+            * åˆ¤æ–­æŸå¼ è¡¨ä¸­æ˜¯å¦å­˜åœ¨æŸå­—æ®µ(æ³¨ï¼Œè¯¥æ–¹æ³•æ— æ³•åˆ¤æ–­è¡¨æ˜¯å¦å­˜åœ¨ï¼Œå› æ­¤åº”ä¸isTableExistä¸€èµ·ä½¿ç”¨) 
             *  
-            * @param tabName ±íÃû 
+            * @param tableName è¡¨å
             * @return 
             */  
              public boolean isColumnExist(String tableName,String columnName){  

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" 
+    >
+    <TextView
+        android:id="@+id/lrowid"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/lpclass"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/lsclass"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/lwtdm"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/lwtms"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/lcz"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:text="@string/del"
+        android:textColor="@color/blue"/>
+    <TextView
+        android:id="@+id/lx"
+        android:textSize="0sp"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/ly"
+        android:textSize="0sp"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+</LinearLayout>

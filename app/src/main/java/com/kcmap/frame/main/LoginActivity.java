@@ -163,6 +163,7 @@ public class LoginActivity extends Activity {
                                 dialog.cancel();
                                 txt_PCH.setText(pcName[which]);
                                 appData.setAppData("PCH",pcName[which],LoginActivity.this);
+								appData.setAppData("YBH","001",LoginActivity.this);//切换批次后默认第一个样本
                             }
                         });
                         AlertDialog dialog=builder.create();
@@ -237,7 +238,7 @@ public class LoginActivity extends Activity {
 			}else {
 				Toast.makeText(LoginActivity.this, "请输入正确的项目号和密码！", Toast.LENGTH_SHORT).show();
 			}
-			dbHelper.closeclose();
+			dbHelper.close();
 
         }
     };

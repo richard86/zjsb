@@ -4,8 +4,6 @@ package com.kcmap.frame.work;
 //import java.io.File;
 //import java.io.FileOutputStream;
 //import java.io.OutputStreamWriter;
-import java.io.IOException;
-import java.util.Iterator;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -22,11 +20,14 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.Iterator;
+
 public class GPSModel {
     Context ctx;
     LocationManager locationManager;
     long time;
-    public AsyncLocationResponse delegate;
+    public AnyResponse delegate;
     public GPSModel(Context context,long time){
         this.ctx=context;
         this.time=time;
@@ -34,14 +35,14 @@ public class GPSModel {
     }
 
     public void updateToNewLocation(Location location)throws IOException {
-        delegate.locateFinish(location);
+        delegate.LocateFinish(location);
 
     }
     @SuppressLint("MissingPermission")
     public void OpenGPS() throws IOException{
         if(locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
             // 查找到服务信息
-            this.delegate=(AsyncLocationResponse)ctx;
+            this.delegate=(AnyResponse) ctx;
             Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_FINE); //设置粗略精确度
             criteria.setAltitudeRequired(false);//设置是否需要返回海拔信息

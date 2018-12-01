@@ -2,7 +2,6 @@ package com.kcmap.frame.main;
 
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -146,7 +145,7 @@ public class XcInfoDljdActivity extends Activity {
 
             dbHelper.insert("N5_Record", contentValues);
 
-            dbHelper.closeclose();
+            dbHelper.close();
             Toast.makeText(XcInfoDljdActivity.this, WTMS+"|"+WTDM, Toast.LENGTH_SHORT).show();
             //----------清空控件值
             WTDM="30";
@@ -202,7 +201,7 @@ public class XcInfoDljdActivity extends Activity {
 
             dbHelper.insert("N5_Record", contentValues);
 
-            dbHelper.closeclose();
+            dbHelper.close();
 
             //----------清空控件值
             WTDM="30";
