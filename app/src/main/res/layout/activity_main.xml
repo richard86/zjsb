@@ -18,205 +18,227 @@
                 android:id="@+id/cross"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center|center"
                 android:background="@drawable/cross">
             </ImageView>
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/leftpanel"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/infotab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/leftup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/border"
-                    android:gravity="top|left"
-                    android:orientation="vertical"
-                    android:padding="15dp">
-
-                    <TextView
-                        android:id="@+id/xmnum"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:id="@+id/infotab"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="top|center"
-                        android:text="项目号："
-                        android:textColor="@color/blue"
-                        android:textSize="15sp" />
+                        android:background="@drawable/border"
+                        android:gravity="top|left"
+                        android:orientation="vertical"
+                        android:padding="15dp">
+                        <TextView
+                            android:id="@+id/xmnum"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="top|center"
+                            android:text="项目号："
+                            android:textColor="@color/blue"
+                            android:textSize="15sp" />
 
-                    <TextView
-                        android:id="@+id/jcry"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="top|center"
-                        android:text="检查人："
-                        android:textColor="@color/blue"
-                        android:textSize="15sp"
-                        android:visibility="gone" />
+                        <TextView
+                            android:id="@+id/jcry"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="top|center"
+                            android:text="检查人："
+                            android:textColor="@color/blue"
+                            android:textSize="15sp"
+                            android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/pcnum"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="top|center"
-                        android:text="当前批次："
-                        android:textColor="@color/blue"
-                        android:textSize="15sp" />
+                        <TextView
+                            android:id="@+id/pcnum"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="top|center"
+                            android:text="当前批次："
+                            android:textColor="@color/blue"
+                            android:textSize="15sp" />
 
-                    <TextView
-                        android:id="@+id/ybnum"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="top|center"
-                        android:text="当前样本："
-                        android:textColor="@color/blue"
-                        android:textSize="15sp" />
+                        <TextView
+                            android:id="@+id/ybnum"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="top|center"
+                            android:text="当前样本："
+                            android:textColor="@color/blue"
+                            android:textSize="15sp" />
+                    </LinearLayout>
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/leftdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:id="@+id/querylist"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/border"
+                        android:gravity="bottom|right"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="30dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/rowid"
+                                android:textColor="@color/red"
+                                android:textSize="15sp" />
+                            <TextView
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/pclass"
+                                android:textColor="@color/red"
+                                android:textSize="15sp"
+                                />
+
+                            <TextView
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/sclass"
+                                android:textColor="@color/red"
+                                android:textSize="15sp"
+                                />
+
+                            <TextView
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/wtdm"
+                                android:textColor="@color/red"
+                                android:textSize="15sp"
+                                />
+
+                            <TextView
+                                android:layout_width="160dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/wtms"
+                                android:textColor="@color/red"
+                                android:textSize="15sp" />
+                            <TextView
+                                android:layout_width="40dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/cz"
+                                android:textColor="@color/red"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/x"
+                                android:textSize="15sp"
+                                android:visibility="gone"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/y"
+                                android:textSize="15sp"
+                                android:visibility="gone"/>
+                        </LinearLayout>
+
+                        <ListView
+                            android:id="@+id/listview"
+                            android:choiceMode="singleChoice"
+                            android:dividerHeight="1dp"
+                            android:divider="#d4d4d4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rightpanel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
                 <LinearLayout
                     android:id="@+id/toolbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="65dp"
-                    android:layout_weight="25"
+                    android:layout_marginVertical="20dp"
                     android:background="@color/caldroid_transparent"
-                    android:gravity="top|right"
+                    android:layout_gravity="top|right"
                     android:orientation="vertical">
 
                     <ImageView
                         android:id="@+id/collect"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="right"
                         android:background="@drawable/btn_addbj">
-
                     </ImageView>
 
                     <ImageView
                         android:id="@+id/line"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="25dp"
-                        android:layout_gravity="right"
+                        android:layout_marginTop="15dp"
                         android:background="@drawable/btn_line">
 
                     </ImageView>
+
                     <ImageView
                         android:id="@+id/btnlocate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="25dp"
-                        android:layout_gravity="right"
+                        android:layout_marginTop="15dp"
                         android:background="@drawable/btn_locate">
 
                     </ImageView>
+
                     <ImageView
                         android:id="@+id/table"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="25dp"
-                        android:layout_gravity="right"
+                        android:layout_marginTop="15dp"
                         android:background="@drawable/btn_table">
 
                     </ImageView>
                 </LinearLayout>
+
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/querylist"
-                android:layout_width="470dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/border"
-                android:gravity="bottom|right"
-                android:orientation="vertical"
-                android:visibility="gone">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="30dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/rowid"
-                        android:textColor="@color/red"
-                        android:textSize="15sp" />
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/pclass"
-                        android:textColor="@color/red"
-                        android:textSize="15sp"
-                        />
-
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/sclass"
-                        android:textColor="@color/red"
-                        android:textSize="15sp"
-                        />
-
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/wtdm"
-                        android:textColor="@color/red"
-                        android:textSize="15sp"
-                        />
-
-                    <TextView
-                        android:layout_width="160dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/wtms"
-                        android:textColor="@color/red"
-                        android:textSize="15sp" />
-                    <TextView
-                        android:layout_width="40dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/cz"
-                        android:textColor="@color/red"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/x"
-                        android:textSize="15sp"
-                        android:visibility="gone"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/y"
-                        android:textSize="15sp"
-                        android:visibility="gone"/>
-                </LinearLayout>
-
-                <ListView
-                    android:id="@+id/listview"
-                    android:choiceMode="singleChoice"
-                    android:dividerHeight="1dp"
-                    android:divider="#d4d4d4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-            </LinearLayout>
         </LinearLayout>
 
 
