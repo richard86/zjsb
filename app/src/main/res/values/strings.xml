@@ -30,4 +30,6 @@
     <string name="cz">操作</string>
     <string name="del">删除</string>
     <string name="rowid">序号</string>
+    <string name="length">边长（米）</string>
+    <string name="uid">UID</string>
 </resources>

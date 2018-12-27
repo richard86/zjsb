@@ -36,7 +36,12 @@ public class AppManager {
         }
         activityStack.add(activity);
     }
-
+    /**
+     * 获取StackActivity
+     */
+    public Stack<Activity> getActivityStack(){
+        return activityStack;
+    }
     /**
      * 获取当前Activity（堆栈中最后一个压入的）
      */

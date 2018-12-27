@@ -11,8 +11,12 @@ import android.widget.Toast;
 
 import com.kcmap.frame.R;
 import com.kcmap.frame.appData.AppData;
+import com.kcmap.frame.utils.AppManager;
+import com.kcmap.frame.work.AnyResponse;
 import com.kcmap.frame.work.DBHelper;
 import com.kcmap.frame.work.UtilTool;
+
+import java.util.Stack;
 
 public class activityTypeD extends Activity {
 
@@ -22,10 +26,19 @@ public class activityTypeD extends Activity {
     RadioGroup radio_d;
     AppData appData;
     EditText eText_ZSZLD_CWMS;
+    AnyResponse delegate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_type_d);
+        AppManager.getAppManager().addActivity(this);
+        Stack<Activity> activityStack=AppManager.getAppManager().getActivityStack();
+        for(Activity activity:activityStack){
+            if(activity instanceof MainActivity){
+                this.delegate=(AnyResponse)activity;
+                break;
+            }
+        }
         appData=new AppData();
         WTDM="40D";
         WTMS="";
@@ -33,7 +46,7 @@ public class activityTypeD extends Activity {
         dbHelper=new DBHelper(this,dbPath);
 
         eText_ZSZLD_CWMS=(EditText)findViewById(R.id.eText_ZSZLD_CWMS);
-        eText_ZSZLD_CWMS.setEnabled(false);
+        //eText_ZSZLD_CWMS.setEnabled(false);
         radio_d=(RadioGroup)findViewById(R.id.radio_d);
         radio_d.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -70,9 +83,24 @@ public class activityTypeD extends Activity {
                 contentValues.put("YBH", UtilTool.getYBH(activityTypeD.this));
                 contentValues.put("WTDM", WTDM);
                 contentValues.put("WTMS", WTMS);
-                contentValues.put("X",appData.getAppData("X",activityTypeD.this));
-                contentValues.put("Y",appData.getAppData("Y",activityTypeD.this));
 
+                String UID=appData.getAppData("UID",activityTypeD.this);
+
+                if(appData.getAppData("TAG",activityTypeD.this).equalsIgnoreCase("POINT")){
+                    String X=appData.getAppData("X",activityTypeD.this);
+                    String Y=appData.getAppData("Y",activityTypeD.this);
+                    contentValues.put("X",X);
+                    contentValues.put("Y",Y);
+                    double x=Double.valueOf(X);
+                    double y=Double.valueOf(Y);
+                    String geoString="POINT:"+x+","+y;
+                    UID=java.util.UUID.randomUUID().toString();
+                    String insertSql="insert into graphics (geometry,xmin,ymin,xmax,ymax,uid) values ('"+geoString+"',"+x+","+y+","+x+","+y+",'"+UID+"')";
+                    dbHelper.execSQL(insertSql);
+                }else{
+                    dbHelper.execSQL("Update graphics set uid = '"+UID+"' Where uid is null");
+                }
+                contentValues.put("UID", UID);
                 dbHelper.insert("N5_Record", contentValues);
 
                 dbHelper.close();
@@ -84,7 +112,8 @@ public class activityTypeD extends Activity {
                 eText_ZSZLD_CWMS.setText("");
                 WTDM="40D";
                 radio_d.check(-1);
-
+                delegate.ResponseUID(UID);
+                activityTypeD.this.getParent().getParent().finish();
             }
         });
 

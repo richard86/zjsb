@@ -33,12 +33,15 @@ import com.esri.android.map.ags.ArcGISLocalTiledLayer;
 import com.esri.android.map.event.OnStatusChangedListener;
 import com.esri.android.runtime.ArcGISRuntime;
 import com.esri.core.geometry.Envelope;
+import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.GeometryEngine;
 import com.esri.core.geometry.MultiPath;
 import com.esri.core.geometry.Point;
+import com.esri.core.geometry.Polygon;
 import com.esri.core.geometry.Polyline;
 import com.esri.core.geometry.SpatialReference;
 import com.esri.core.map.Graphic;
+import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol.STYLE;
@@ -48,6 +51,7 @@ import com.kcmap.frame.ui.CustomDialog;
 import com.kcmap.frame.ui.CustomListAdapter;
 import com.kcmap.frame.utils.AppManager;
 import com.kcmap.frame.work.DBHelper;
+import com.kcmap.frame.work.DrawTool;
 import com.kcmap.frame.work.GPSModel;
 import com.kcmap.frame.work.AnyResponse;
 import com.kcmap.frame.work.MeasureTool;
@@ -60,6 +64,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -81,8 +86,11 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
 
     String[] measureTypes;
 
+    String dbPath;
     DBHelper dbHelper;
+
     MeasureTool measureTool;
+    DrawTool drawTool;
     GPSModel gpsModel;
     int gpsGraphicID=0;
     Point myPoint = null;
@@ -94,14 +102,38 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
     GraphicsLayer tempGraphicLayer;
     GraphicsLayer gpsLayer;
 
+    GraphicsLayer ctGraphicLayer;
+
+
     MultiPath poly;
     SimpleLineSymbol sls;
     SimpleMarkerSymbol sms;
     Graphic graphicLine;
     int graphicID;
 
-    ListView listView;
-    LinearLayout querylist;
+    ListView xcinfolistView;
+    LinearLayout xcinfolist;
+
+    ListView bcinfolistView;
+    LinearLayout bcinfolist;
+
+    ImageView btnCollect;
+    ImageView btnDistance;
+    ImageView btnLocate;
+    ImageView btnSwitchTable;
+    ImageView btnOpenTable;
+
+    ImageView i_draw_point;
+    ImageView i_draw_line;
+    ImageView i_draw_freeline;
+    ImageView i_draw_poly;
+    ImageView i_draw_freepoly;
+    ImageView i_draw_text;
+
+    ImageView i_pan;
+    ImageView i_ok;
+    ImageView i_cancel;
+
 
 
     @Override
@@ -151,8 +183,8 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
         LinearLayout lllLayout = (LinearLayout) findViewById(R.id.infotab);
         lllLayout.getBackground().mutate().setAlpha(180);
 
-        ImageView collectButton = (ImageView) findViewById(R.id.collect);
-        collectButton.setOnClickListener(new View.OnClickListener() {
+        btnCollect = (ImageView) findViewById(R.id.btncollect);
+        btnCollect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Toast.makeText(MainActivity.this,String.valueOf(mMapView.getScale()),Toast.LENGTH_SHORT).show();
@@ -161,6 +193,8 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
                 graphicsLayer.addGraphic(graphic);
 
                 Intent intent = new Intent(MainActivity.this, XcInfoMainActivity.class);
+
+                appData.setAppData("TAG","POINT",MainActivity.this);
                 appData.setAppData("X", String.valueOf(centerPoint.getX()),MainActivity.this);
                 appData.setAppData("Y", String.valueOf(centerPoint.getY()),MainActivity.this);
                 startActivity(intent);
@@ -168,8 +202,8 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
             }
         });
 
-        ImageView lineButton = (ImageView) findViewById(R.id.line);
-        lineButton.setOnClickListener(lineBtnOnClickListener);
+        btnDistance = (ImageView) findViewById(R.id.btndistance);
+        btnDistance.setOnClickListener(lineBtnOnClickListener);
 
         if (tpkFileList != null) {
             tpkName = new String[tpkFileList.length];
@@ -177,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
                 tpkName[i] = tpkFileList[i].getName().substring(0, tpkFileList[i].getName().indexOf(".tpk"));
             }
 
-            String dbPath=UtilTool.getDBPath(MainActivity.this);
+            dbPath=UtilTool.getDBPath(MainActivity.this);
             dbHelper=new DBHelper(MainActivity.this,dbPath);
 
             tfName=new String[tpkName.length];
@@ -199,39 +233,64 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
                         txt_YBH.setText("当前样本：" + tfName[k]);
                         break;
                     }
-
                 }
-
-
             }else{
                 LoadLocalTiledMapService(mMapView, "file://" + tpkFileList[0].getAbsolutePath(), 0);
                 txt_YBH.setText("当前样本：" + tfName[0]);
             }
         }
 
-        listView=(ListView)findViewById(R.id.listview);
-        querylist=(LinearLayout)findViewById(R.id.querylist);
-        //querylist.setAlpha((float)0.7);
+        xcinfolistView=(ListView)findViewById(R.id.xcinfolistview);
+        xcinfolist=(LinearLayout)findViewById(R.id.xcinfolist);
 
-        final ImageView tableButton=(ImageView)findViewById(R.id.table);
-        tableButton.setOnClickListener(new View.OnClickListener() {
+        bcinfolistView=(ListView)findViewById(R.id.bcinfolistview);
+        bcinfolist=(LinearLayout)findViewById(R.id.bcinfolist);
+
+        btnSwitchTable=(ImageView)findViewById(R.id.switchtable);
+        btnSwitchTable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(querylist.getVisibility()==View.VISIBLE){
-                    tableButton.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.btn_table));
-                    querylist.setVisibility(View.GONE);
+                if(xcinfolist.getVisibility()==View.VISIBLE){
+                    btnSwitchTable.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.btnbcinfo));
+                    xcinfolist.setVisibility(View.GONE);
+                    bcinfolist.setVisibility(View.VISIBLE);
                     tempGraphicLayer.removeAll();
-                }else {
-                    tableButton.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.btn_table_pressed));
-                    querylist.setVisibility(View.VISIBLE);
-
+                    QueryBCInfo();
+                }
+                else{
+                    btnSwitchTable.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.btnxcinfo));
+                    xcinfolist.setVisibility(View.VISIBLE);
+                    bcinfolist.setVisibility(View.GONE);
+                    tempGraphicLayer.removeAll();
                     QueryXCInfo();
                 }
             }
         });
 
-        final ImageView btnlocate=(ImageView)findViewById(R.id.btnlocate);
-        btnlocate.setOnClickListener(new View.OnClickListener() {
+        btnOpenTable=(ImageView)findViewById(R.id.btntable);
+        btnOpenTable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(btnSwitchTable.getVisibility()==View.VISIBLE){
+                    btnOpenTable.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.btn_table));
+                    btnSwitchTable.setVisibility(View.GONE);
+                    xcinfolist.setVisibility(View.GONE);
+                    bcinfolist.setVisibility(View.GONE);
+                    tempGraphicLayer.removeAll();
+                }else{
+                    btnSwitchTable.setVisibility(View.VISIBLE);
+                    xcinfolist.setVisibility(View.VISIBLE);
+                    btnOpenTable.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.btn_table_pressed));
+                    btnSwitchTable.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.btnbcinfo));
+                    QueryXCInfo();
+                }
+            }
+        });
+
+
+
+        btnLocate=(ImageView)findViewById(R.id.btnlocate);
+        btnLocate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(gpsModel==null){
@@ -239,9 +298,9 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
                 }else {
                     gzBoolean=!gzBoolean;
                     if(gzBoolean){
-                        btnlocate.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.btn_locate_pressed));
+                        btnLocate.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.btn_locate_pressed));
                     }else {
-                        btnlocate.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.btn_locate));
+                        btnLocate.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.btn_locate));
                         gpsModel.CloseGPS();
                         gpsModel=null;
                     }
@@ -253,46 +312,216 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
         sms = new SimpleMarkerSymbol(Color.RED, 9, STYLE.CIRCLE);
         sls = new SimpleLineSymbol(Color.BLUE, 2);
 
+        //------------------草图工具
+        i_draw_point=(ImageView)findViewById(R.id.i_draw_point);
+        i_draw_point.setOnClickListener(drawToolClickListener);
+
+        i_draw_line=(ImageView)findViewById(R.id.i_draw_line);
+        i_draw_line.setOnClickListener(drawToolClickListener);
+
+        i_draw_freeline=(ImageView)findViewById(R.id.i_draw_freeline);
+        i_draw_freeline.setOnClickListener(drawToolClickListener);
+
+        i_draw_poly=(ImageView)findViewById(R.id.i_draw_poly);
+        i_draw_poly.setOnClickListener(drawToolClickListener);
+
+        i_draw_freepoly=(ImageView)findViewById(R.id.i_draw_freepoly);
+        i_draw_freepoly.setOnClickListener(drawToolClickListener);
+
+        i_draw_text=(ImageView)findViewById(R.id.i_draw_text);
+        i_draw_text.setOnClickListener(drawToolClickListener);
+
+        i_ok=(ImageView)findViewById(R.id.i_ok);
+        i_ok.setOnClickListener(drawToolClickListener);
+
+        i_cancel=(ImageView)findViewById(R.id.i_cancel);
+        i_cancel.setOnClickListener(drawToolClickListener);
+
+        i_pan=(ImageView)findViewById(R.id.i_pan);
+        i_pan.setOnClickListener(drawToolClickListener);
+
     }
 
+    View.OnClickListener drawToolClickListener=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            RestoreDrawTool();
+            if(drawTool==null){
+                drawTool=new DrawTool(MainActivity.this,mMapView,ctGraphicLayer,dbPath);
+            }
 
+            if(view.getId()==R.id.i_draw_point){
+                drawTool.drawPoint();
+                i_draw_point.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.i_draw_point_open));
+            }
+            if(view.getId()==R.id.i_draw_line){
+                drawTool.drawLine();
+                i_draw_line.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.i_draw_line_open));
+            }
+            if(view.getId()==R.id.i_draw_freeline){
 
-    private void QueryXCInfo(){
+                drawTool.drawFreeLine();
+                i_draw_freeline.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.i_draw_freeline_open));
+            }
+            if(view.getId()==R.id.i_draw_poly){
 
+                drawTool.drawPolygon();
+                i_draw_poly.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.i_draw_poly_open));
+            }
+            if(view.getId()==R.id.i_draw_freepoly){
+
+                drawTool.drawFreePolygon();
+                i_draw_freepoly.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.i_draw_freepoly_open));
+            }
+            if(view.getId()==R.id.i_pan){
+                i_pan.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.i_pan_open));
+                if(drawTool!=null){
+                    drawTool.cancelDraw();
+                    drawTool=null;
+                }
+            }
+            if(view.getId()==R.id.i_ok){
+                if(drawTool!=null){
+                    drawTool.cancelDraw();
+                    String UID=java.util.UUID.randomUUID().toString();
+                    appData.setAppData("TAG","POLY",MainActivity.this);
+                    appData.setAppData("UID",UID,MainActivity.this);
+                    Intent intent = new Intent(MainActivity.this, XcInfoMainActivity.class);
+                    startActivity(intent);
+                }
+            }
+            if(view.getId()==R.id.i_cancel){
+                if(drawTool!=null) {
+                    drawTool.cancelDraw();
+                    DeleteUIDNullGraphics();
+                }
+
+            }
+        }
+    };
+
+    private void DeleteUIDNullGraphics(){
+        dbHelper.open();
+        dbHelper.execSQL("delete from graphics where uid is null");
+        dbHelper.close();
+        int[] gs=ctGraphicLayer.getGraphicIDs();
+        for(int i=0;i<gs.length;i++){
+            if(ctGraphicLayer.getGraphic(gs[i]).getAttributeValue("uid")==null){
+                ctGraphicLayer.removeGraphic(gs[i]);
+            }
+        }
+    }
+
+    private void SetUIDNullGraphics(String UID){
+        HashMap<String, Object> attribute = new HashMap<String, Object>();
+        attribute.put("uid", UID);
+        int[] gs=ctGraphicLayer.getGraphicIDs();
+        for(int i=0;i<gs.length;i++){
+            if(ctGraphicLayer.getGraphic(gs[i]).getAttributeValue("uid")==null){
+                ctGraphicLayer.updateGraphic(gs[i],attribute);
+            }
+        }
+    }
+
+    private boolean CheckUIDGraphicExits(String UID){
+        boolean isExits=false;
+        if(ctGraphicLayer.getNumberOfGraphics()>0){
+            int[] gs=ctGraphicLayer.getGraphicIDs();
+            for(int i=0;i<gs.length;i++){
+                if(ctGraphicLayer.getGraphic(gs[i]).getAttributeValue("uid").toString().equalsIgnoreCase(UID)){
+                    isExits=true;
+                    break;
+                }
+            }
+        }
+        return isExits;
+    }
+
+    private void RestoreDrawTool(){
+        i_draw_point.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.i_draw_point));
+        i_draw_line.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.i_draw_line));
+        i_draw_freeline.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.i_draw_freeline));
+        i_draw_poly.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.i_draw_poly));
+        i_draw_freepoly.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.i_draw_freepoly));
+        i_draw_text.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.i_draw_text));
+        i_pan.setBackground(MainActivity.this.getResources().getDrawable(R.drawable.i_pan));
+    }
+
+    //-------------初始化草图
+    private void InitDrawLayer(){
+        ctGraphicLayer.removeAll();
+        dbHelper.open();
+        Cursor returnCursor=dbHelper.queryList("select id,geometry,uid from graphics where uid is not null order by rowid desc");
+
+        while(returnCursor.moveToNext()){
+            String geoString=returnCursor.getString(1);//geoType:x,y|x,y|x,y
+            String geoType=geoString.split(":")[0];//geoType
+            String geoPointsString=geoString.split(":")[1];//x,y|x,y|x,y
+            String UID=returnCursor.getString(2);
+
+            HashMap<String, Object> attribute = new HashMap<String, Object>();
+            attribute.put("uid", UID);
+            if(geoType.equalsIgnoreCase("POINT")){
+                SimpleMarkerSymbol sms = new SimpleMarkerSymbol(Color.RED, 12, STYLE.CIRCLE);
+                String xString=geoPointsString.split(",")[0];//x
+                String yString=geoPointsString.split(",")[1];//y
+                Point point=new Point(Double.valueOf(xString), Double.valueOf(yString));
+                Graphic pGraphic=new Graphic(point, sms,attribute);
+                ctGraphicLayer.addGraphic(pGraphic);
+            }else if(geoType.equalsIgnoreCase("POLYLINE") || geoType.equalsIgnoreCase("POLYGON") || geoType.equalsIgnoreCase("FREEPOLYLINE") || geoType.equalsIgnoreCase("FREEPOLYGON")){
+                String[] pointString=geoPointsString.split(";");//x,y
+                MultiPath poly = (geoType.equalsIgnoreCase("POLYLINE") || geoType.equalsIgnoreCase("FREEPOLYLINE")) ? new Polyline() : new Polygon();
+                poly.startPath(Double.valueOf(pointString[0].split(",")[0]), Double.valueOf(pointString[0].split(",")[1]));
+                for(int i=0;i<pointString.length;i++){
+                    String xString=pointString[i].split(",")[0];//x
+                    String yString=pointString[i].split(",")[1];//y
+                    Point point=new Point(Double.valueOf(xString), Double.valueOf(yString));
+                    poly.lineTo(point);
+                }
+                if(geoType.equalsIgnoreCase("POLYLINE") || geoType.equalsIgnoreCase("FREEPOLYLINE")){
+                    SimpleLineSymbol sls = new SimpleLineSymbol(Color.BLUE, 2);
+                    Graphic pGraphic=new Graphic(poly, sls,attribute);
+                    ctGraphicLayer.addGraphic(pGraphic);
+                }
+                if(geoType.equalsIgnoreCase("POLYGON") || geoType.equalsIgnoreCase("FREEPOLYGON")){
+                    SimpleFillSymbol sfs = new SimpleFillSymbol(Color.RED);
+                    sfs.setOutline(new SimpleLineSymbol(Color.BLUE, 2));
+                    sfs.setAlpha(50);
+                    Graphic pGraphic=new Graphic(poly, sfs,attribute);
+                    ctGraphicLayer.addGraphic(pGraphic);
+                }
+            }
+        }
+        dbHelper.close();
+    }
+
+    private void QueryBCInfo(){
         List<HashMap<String, Object>> dataMap = new ArrayList<HashMap<String, Object>>();
 
         dbHelper.open();
         String YBH=UtilTool.getYBH(MainActivity.this);
-        Cursor returnCursor = dbHelper.findList("N5_Record", new String[] { "rowid","P_CLASS","S_CLASS","WTDM","WTMS","X","Y" }, "YBH = ?",
-                new String[] { YBH }, null, null, null);
+        Cursor returnCursor = dbHelper.findList("N7_Record", new String[] { "rowid","Length"}, "YBH = ?",
+                new String[] { YBH }, null, null, "rowid desc");
         while (returnCursor.moveToNext()){
-            String rowid=returnCursor.getString(returnCursor.getColumnIndex("rowid"));
-            String pclass=returnCursor.getString(returnCursor.getColumnIndex("P_CLASS"));
-            String sclass=returnCursor.getString(returnCursor.getColumnIndex("S_CLASS"));
-            String wtdm=returnCursor.getString(returnCursor.getColumnIndex("WTDM"));
-            String wtms=returnCursor.getString(returnCursor.getColumnIndex("WTMS"));
-            String x=returnCursor.getString(returnCursor.getColumnIndex("X"));
-            String y=returnCursor.getString(returnCursor.getColumnIndex("Y"));
+            String nrowid=returnCursor.getString(returnCursor.getColumnIndex("rowid"));
+            String nlength=returnCursor.getString(returnCursor.getColumnIndex("Length"));
+
 
             HashMap<String,Object> map = new HashMap<String,Object>();
-            map.put("rowid", rowid);
-            map.put("pclass", pclass);
-            map.put("sclass", sclass);
-            map.put("wtdm", wtdm);
-            map.put("wtms", wtms);
-            map.put("x", x);
-            map.put("y", y);
+            map.put("rowid", nrowid);
+            map.put("length", nlength);
+
             dataMap.add(map);
         }
 
         dbHelper.close();
 
-        CustomListAdapter adapter=new CustomListAdapter(MainActivity.this,dataMap,R.layout.item_activity_xcinfo,
-                new String[]{"rowid","pclass","sclass","wtdm","wtms","x","y"},new int[]{R.id.lrowid,R.id.lpclass,R.id.lsclass,R.id.lwtdm,R.id.lwtms,R.id.lx,R.id.ly});
+        CustomListAdapter adapter=new CustomListAdapter(MainActivity.this,dataMap,R.layout.item_activity_bcinfo,
+                new String[]{"rowid","length"},new int[]{R.id.nrowid,R.id.nlength});
 
-        listView.setAdapter(adapter);
+        bcinfolistView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        bcinfolistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
                 ListView lv = (ListView) parent;
@@ -303,14 +532,143 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
                 lv.setTag(view);
                 view.setBackgroundColor(Color.RED);
 
-                HashMap<String, Object> poi = (HashMap<String, Object>) lv
-                        .getItemAtPosition(position);// SimpleAdapter返回Map
-                Point pt = new Point();
-                pt.setX(Double.parseDouble(poi.get("x").toString()));
-                pt.setY(Double.parseDouble(poi.get("y").toString()));
-                tempGraphicLayer.addGraphic(new Graphic(pt,sms));
-                mMapView.centerAt(pt,false);
-                mMapView.setScale(200);
+                HashMap<String, Object> hashMap = (HashMap<String, Object>) lv.getItemAtPosition(position);// SimpleAdapter返回Map
+
+                dbHelper.open();
+
+                Cursor returnCursor = dbHelper.findList("N7_Record", new String[] { "rowid","Length","X0","Y0","X1","Y1"}, "rowid = ?",
+                        new String[] { hashMap.get("rowid").toString() }, null, null, "rowid desc");
+                if (returnCursor.moveToNext()){
+                    double X0=returnCursor.getDouble(returnCursor.getColumnIndex("X0"));
+                    double Y0=returnCursor.getDouble(returnCursor.getColumnIndex("Y0"));
+                    double X1=returnCursor.getDouble(returnCursor.getColumnIndex("X1"));
+                    double Y1=returnCursor.getDouble(returnCursor.getColumnIndex("Y1"));
+                    MultiPath poly =new Polyline();
+                    poly.startPath(new Point(X0,Y0));
+                    poly.lineTo(new Point(X1,Y1));
+                    Graphic graphic=new Graphic(poly,sls);
+                    tempGraphicLayer.addGraphic(graphic);
+                    mMapView.centerAt(new Point((X1+X0)/2,(Y1+Y0)/2),false);
+                    mMapView.setScale(300);
+                }
+
+                dbHelper.close();
+
+            }
+        });
+    }
+
+    private void QueryXCInfo(){
+
+        List<HashMap<String, Object>> dataMap = new ArrayList<HashMap<String, Object>>();
+
+        dbHelper.open();
+        String YBH=UtilTool.getYBH(MainActivity.this);
+        Cursor returnCursor = dbHelper.findList("N5_Record", new String[] { "rowid","WTDM","WTMS","UID"}, "YBH = ?",
+                new String[] { YBH }, null, null, "rowid desc");
+
+//        Cursor returnCursor=dbHelper.queryList(sql);
+        while (returnCursor.moveToNext()){
+            String rowid=returnCursor.getString(returnCursor.getColumnIndex("rowid"));
+            String wtdm=returnCursor.getString(returnCursor.getColumnIndex("WTDM"));
+            String wtms=returnCursor.getString(returnCursor.getColumnIndex("WTMS"));
+            String uid=returnCursor.getString(returnCursor.getColumnIndex("UID"));
+
+            HashMap<String,Object> map = new HashMap<String,Object>();
+            map.put("rowid", rowid);
+            map.put("wtdm", wtdm);
+            map.put("wtms", wtms);
+            map.put("uid", uid);
+            dataMap.add(map);
+        }
+
+        dbHelper.close();
+
+        CustomListAdapter adapter=new CustomListAdapter(MainActivity.this,dataMap,R.layout.item_activity_xcinfo,
+                new String[]{"rowid","wtdm","wtms","uid"},new int[]{R.id.lrowid,R.id.lwtdm,R.id.lwtms,R.id.luid});
+
+        xcinfolistView.setAdapter(adapter);
+
+        xcinfolistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
+                ListView lv = (ListView) parent;
+
+                if (lv.getTag() != null){
+                    ((View)lv.getTag()).setBackgroundDrawable(null);
+                }
+                lv.setTag(view);
+                view.setBackgroundColor(Color.RED);
+
+                boolean isGraphicExits=false;
+                HashMap<String, Object> hashMap = (HashMap<String, Object>) lv.getItemAtPosition(position);// SimpleAdapter返回Map
+                String UID=hashMap.get("uid").toString();
+                if(CheckUIDGraphicExits(UID)){
+                    isGraphicExits=true;
+                }
+                //ctGraphicLayer.removeAll();
+                dbHelper.open();
+                Cursor c=dbHelper.queryList("select geometry from graphics where uid='"+UID+"'");
+                if(c.getCount()>0){
+                    Geometry[] geometries=new Geometry[c.getCount()];
+                    Graphic pGraphic=null;
+                    HashMap<String, Object> attribute = new HashMap<String, Object>();
+                    attribute.put("uid", UID);
+                    int k=0;
+                    while (c.moveToNext()){
+                        String geoString=c.getString(0);
+                        String geoType=geoString.split(":")[0];//geoType
+                        String geoPointsString=geoString.split(":")[1];//x,y|x,y|x,y
+
+                        if(geoType.equalsIgnoreCase("POINT")){
+                            SimpleMarkerSymbol sms = new SimpleMarkerSymbol(Color.RED, 12, STYLE.CIRCLE);
+                            String xString=geoPointsString.split(",")[0];//x
+                            String yString=geoPointsString.split(",")[1];//y
+                            Point point=new Point(Double.valueOf(xString), Double.valueOf(yString));
+                            pGraphic=new Graphic(point, sms,attribute);
+                            if(!isGraphicExits){
+                                ctGraphicLayer.addGraphic(pGraphic);
+                            }
+
+                        }else if(geoType.equalsIgnoreCase("POLYLINE") || geoType.equalsIgnoreCase("POLYGON") || geoType.equalsIgnoreCase("FREEPOLYLINE") || geoType.equalsIgnoreCase("FREEPOLYGON")){
+                            String[] pointString=geoPointsString.split(";");//x,y
+                            MultiPath poly = (geoType.equalsIgnoreCase("POLYLINE") || geoType.equalsIgnoreCase("FREEPOLYLINE")) ? new Polyline() : new Polygon();
+                            poly.startPath(Double.valueOf(pointString[0].split(",")[0]), Double.valueOf(pointString[0].split(",")[1]));
+                            for(int i=0;i<pointString.length;i++){
+                                String xString=pointString[i].split(",")[0];//x
+                                String yString=pointString[i].split(",")[1];//y
+                                Point point=new Point(Double.valueOf(xString), Double.valueOf(yString));
+                                poly.lineTo(point);
+                            }
+                            if(geoType.equalsIgnoreCase("POLYLINE") || geoType.equalsIgnoreCase("FREEPOLYLINE")){
+                                SimpleLineSymbol sls = new SimpleLineSymbol(Color.BLUE, 2);
+                                pGraphic=new Graphic(poly, sls,attribute);
+                                if(!isGraphicExits){
+                                    ctGraphicLayer.addGraphic(pGraphic);
+                                }
+                            }
+                            if(geoType.equalsIgnoreCase("POLYGON") || geoType.equalsIgnoreCase("FREEPOLYGON")){
+                                SimpleFillSymbol sfs = new SimpleFillSymbol(Color.RED);
+                                sfs.setOutline(new SimpleLineSymbol(Color.BLUE, 2));
+                                sfs.setAlpha(50);
+                                pGraphic=new Graphic(poly, sfs,attribute);
+
+                                if(!isGraphicExits){
+                                    ctGraphicLayer.addGraphic(pGraphic);
+                                }
+                            }
+                        }
+                        geometries[k]=pGraphic.getGeometry();
+                        k++;
+                    }
+                    if(geometries.length>0){
+                        Geometry geo=GeometryEngine.union(geometries,mMapView.getSpatialReference());
+                        mMapView.setExtent(geo);
+                    }
+
+                }
+
+                dbHelper.close();
             }
         });
 
@@ -329,6 +687,8 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
                 mMapView.addLayer(tempGraphicLayer);
                 gpsLayer=new GraphicsLayer();
                 mMapView.addLayer(gpsLayer);
+                ctGraphicLayer=new GraphicsLayer();
+                mMapView.addLayer(ctGraphicLayer);
             }
 
         }
@@ -469,7 +829,7 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {//标题栏工具条Menu
-        if (item.getTitle().equals("切换样本")) {
+        if (item.getItemId()==R.id.action_layers_bar) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("选择外业核查样本");
             builder.setSingleChoiceItems(tfName, -1, new DialogInterface.OnClickListener() {
@@ -490,7 +850,7 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
             AlertDialog dialog = builder.create();
             dialog.show();
         }
-        if (item.getTitle().equals("检查人员")) {
+        if (item.getItemId()==R.id.action_feature_bar) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("选择外业核查人员");
             builder.setSingleChoiceItems(checkPerson, -1, new DialogInterface.OnClickListener() {
@@ -520,6 +880,7 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
                 gpsModel=new GPSModel(MainActivity.this,3);//每3秒更新一次位置
                 try {
                     gpsModel.OpenGPS();
+                    btnLocate.setVisibility(View.VISIBLE);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -535,10 +896,21 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
                 measureTool=null;
             }
         }
-
-
-
-
+        //------------草图菜单
+        if (item.getItemId()==R.id.action_ct_bar){
+            LinearLayout drawtools=(LinearLayout)this.findViewById(R.id.drawtools);
+            if(drawtools.getVisibility()==View.VISIBLE){
+                if(drawTool!=null){
+                    drawTool.cancelDraw();
+                }
+                RestoreDrawTool();
+                drawtools.setVisibility(View.GONE);
+                ctGraphicLayer.removeAll();
+            }else{
+                drawtools.setVisibility(View.VISIBLE);
+                InitDrawLayer();
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -547,6 +919,8 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
             try {
                 if (gpsModel != null) {
                     gpsModel.OpenGPS();
+                    btnLocate.setVisibility(View.VISIBLE);
+
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -624,10 +998,34 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
 
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        dbHelper.open();
-                        dbHelper.execSQL("delete from N5_Record where rowid ="+String.valueOf(id));
-                        dbHelper.close();
-                        QueryXCInfo();
+
+                        if(xcinfolist.getVisibility()==View.VISIBLE){
+                            dbHelper.open();
+                            Cursor c=dbHelper.queryList("Select uid from N5_Record where rowid ="+String.valueOf(id));
+                            String uid="";
+                            if(c.moveToFirst()){
+                                uid=c.getString(0);
+                                dbHelper.execSQL("delete from graphics where uid='"+uid+"'");
+                            }
+                            dbHelper.execSQL("delete from N5_Record where rowid ="+String.valueOf(id));
+                            dbHelper.close();
+
+                            int[] gs=ctGraphicLayer.getGraphicIDs();
+                            for(int i=0;i<gs.length;i++){
+                                Graphic g=ctGraphicLayer.getGraphic(gs[i]);
+                                if(g.getAttributeValue("uid").toString().equalsIgnoreCase(uid)){
+                                    ctGraphicLayer.removeGraphic(gs[i]);
+                                }
+                            }
+
+                            QueryXCInfo();
+                        }else{
+                            dbHelper.open();
+                            dbHelper.execSQL("delete from N7_Record where rowid ="+String.valueOf(id));
+                            dbHelper.close();
+                            QueryBCInfo();
+                        }
+
                     }
                 }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
@@ -674,10 +1072,16 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
     }
 
     @Override
+    public void ResponseUID(String uid) {
+        SetUIDNullGraphics(uid);
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (gpsModel != null) {
                 gpsModel.CloseGPS();
+                btnLocate.setVisibility(View.GONE);
                 gpsModel=null;
                 gpsLayer.removeAll();
             }

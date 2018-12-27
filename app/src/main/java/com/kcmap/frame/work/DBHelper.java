@@ -115,15 +115,24 @@ public class DBHelper {
         }  
         return mCursor;  
   
-    }  
-  
+    }
+    /**
+     * 执行sql
+     * 参数：sql 要执行的sql
+
+     *   */
+    public Cursor queryList(String sql){
+        return mDb.rawQuery(sql,null);
+    }
+
     /** 
      * 执行sql 
      * 参数：sql 要执行的sql 
       
      *   */  
     public void execSQL(String sql){  
-        mDb.execSQL(sql);  
+        mDb.execSQL(sql);
+
           
     }  
       

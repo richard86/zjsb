@@ -2,6 +2,8 @@ package com.kcmap.frame.main;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,9 +14,12 @@ import android.widget.Toast;
 
 import com.kcmap.frame.R;
 import com.kcmap.frame.appData.AppData;
+import com.kcmap.frame.utils.AppManager;
+import com.kcmap.frame.work.AnyResponse;
 import com.kcmap.frame.work.DBHelper;
 
 import java.io.File;
+import java.util.Stack;
 
 /**
  * Created by lizhiwei on 2018/11/13.
@@ -36,14 +41,13 @@ public class XcInfoDljdActivity extends Activity {
     EditText eText_CWMC;
     Button button_YSCW_INSERT;
     Button button_MCCW_INSERT;
-
-
+    AnyResponse delegate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_xcinfo_dljd);
-
+        AppManager.getAppManager().addActivity(this);
         appData = new AppData();
         XMH=appData.getAppData("XMH",XcInfoDljdActivity.this);
         PCH=appData.getAppData("PCH",XcInfoDljdActivity.this);
@@ -72,7 +76,13 @@ public class XcInfoDljdActivity extends Activity {
         button_MCCW_INSERT= (Button) findViewById(R.id.button_MCCW_INSERT);
         button_MCCW_INSERT.setOnClickListener(button_MCCW_INSERT_Click);
 
-
+        Stack<Activity> activityStack=AppManager.getAppManager().getActivityStack();
+        for(Activity activity:activityStack){
+            if(activity instanceof MainActivity){
+                this.delegate=(AnyResponse)activity;
+                break;
+            }
+        }
 
     }
 
@@ -140,10 +150,26 @@ public class XcInfoDljdActivity extends Activity {
             contentValues.put("YBH", YBH);
             contentValues.put("WTDM", WTDM);
             contentValues.put("WTMS", WTMS);
-            contentValues.put("X",appData.getAppData("X",XcInfoDljdActivity.this));
-            contentValues.put("Y",appData.getAppData("Y",XcInfoDljdActivity.this));
 
+            String UID=appData.getAppData("UID",XcInfoDljdActivity.this);
+
+            if(appData.getAppData("TAG",XcInfoDljdActivity.this).equalsIgnoreCase("POINT")){
+                String X=appData.getAppData("X",XcInfoDljdActivity.this);
+                String Y=appData.getAppData("Y",XcInfoDljdActivity.this);
+                contentValues.put("X",X);
+                contentValues.put("Y",Y);
+                double x=Double.valueOf(X);
+                double y=Double.valueOf(Y);
+                String geoString="POINT:"+x+","+y;
+                UID=java.util.UUID.randomUUID().toString();
+                String insertSql="insert into graphics (geometry,xmin,ymin,xmax,ymax,uid) values ('"+geoString+"',"+x+","+y+","+x+","+y+",'"+UID+"')";
+                dbHelper.execSQL(insertSql);
+            }else{
+                dbHelper.execSQL("Update graphics set uid = '"+UID+"' Where uid is null");
+            }
+            contentValues.put("UID", UID);
             dbHelper.insert("N5_Record", contentValues);
+
 
             dbHelper.close();
             Toast.makeText(XcInfoDljdActivity.this, WTMS+"|"+WTDM, Toast.LENGTH_SHORT).show();
@@ -152,6 +178,8 @@ public class XcInfoDljdActivity extends Activity {
             errorclasstype.check(-1);
             eText_YSLB.setText("");
             ycerrortype.check(-1);
+            delegate.ResponseUID(UID);
+            XcInfoDljdActivity.this.getParent().finish();
 
         }
     };
@@ -196,18 +224,37 @@ public class XcInfoDljdActivity extends Activity {
             contentValues.put("YBH", YBH);
             contentValues.put("WTDM", WTDM);
             contentValues.put("WTMS", WTMS);
-            contentValues.put("X",appData.getAppData("X",XcInfoDljdActivity.this));
-            contentValues.put("Y",appData.getAppData("Y",XcInfoDljdActivity.this));
 
+            String UID=appData.getAppData("UID",XcInfoDljdActivity.this);
+
+            if(appData.getAppData("TAG",XcInfoDljdActivity.this).equalsIgnoreCase("POINT")){
+                String X=appData.getAppData("X",XcInfoDljdActivity.this);
+                String Y=appData.getAppData("Y",XcInfoDljdActivity.this);
+                contentValues.put("X",X);
+                contentValues.put("Y",Y);
+                double x=Double.valueOf(X);
+                double y=Double.valueOf(Y);
+                String geoString="POINT:"+x+","+y;
+                UID=java.util.UUID.randomUUID().toString();
+                String insertSql="insert into graphics (geometry,xmin,ymin,xmax,ymax,uid) values ('"+geoString+"',"+x+","+y+","+x+","+y+",'"+UID+"')";
+                dbHelper.execSQL(insertSql);
+            }else{
+                dbHelper.execSQL("Update graphics set uid = '"+UID+"' Where uid is null");
+            }
+
+            contentValues.put("UID", UID);
             dbHelper.insert("N5_Record", contentValues);
 
             dbHelper.close();
+            Toast.makeText(XcInfoDljdActivity.this, WTMS+"|"+WTDM, Toast.LENGTH_SHORT).show();
 
             //----------清空控件值
             WTDM="30";
             errorclasstype.check(-1);
             eText_CWMC.setText("");
             mcerrortype.check(-1);
+            delegate.ResponseUID(UID);
+            XcInfoDljdActivity.this.getParent().finish();
         }
     };
 

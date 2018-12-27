@@ -44,16 +44,18 @@ public class CustomListAdapter extends SimpleAdapter {
         else
             view.setBackgroundColor(Color.argb(250, 232, 241, 251));
 
-        TextView lrowid=(TextView)((ViewGroup) view).getChildAt(0);
+        TextView rowid=(TextView)((ViewGroup) view).getChildAt(0);
 
-        final int rowid=Integer.valueOf(lrowid.getText().toString());
+        final int id=Integer.valueOf(rowid.getText().toString());
 
-        TextView lsc=(TextView)((ViewGroup) view).getChildAt(5);
+        int count=((ViewGroup)view).getChildCount();
+
+        TextView lsc=(TextView)((ViewGroup) view).getChildAt(count-1);
 
         lsc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                delegate.ResponseSelectRow(rowid);
+                delegate.ResponseSelectRow(id);
             }
         });
 

@@ -8,4 +8,5 @@ import android.location.Location;
 public interface AnyResponse {
     void ResponseSelectRow(int id);
     void LocateFinish(Location location);
+    void ResponseUID(String uid);
 }
