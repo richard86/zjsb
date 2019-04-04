@@ -401,26 +401,33 @@ public class MainActivity extends AppCompatActivity implements AnyResponse {
     };
 
     private void DeleteUIDNullGraphics(){
-        dbHelper.open();
-        dbHelper.execSQL("delete from graphics where uid is null");
-        dbHelper.close();
-        int[] gs=ctGraphicLayer.getGraphicIDs();
-        for(int i=0;i<gs.length;i++){
-            if(ctGraphicLayer.getGraphic(gs[i]).getAttributeValue("uid")==null){
-                ctGraphicLayer.removeGraphic(gs[i]);
+        if(ctGraphicLayer.getNumberOfGraphics()>0){
+            dbHelper.open();
+            dbHelper.execSQL("delete from graphics where uid is null");
+            dbHelper.close();
+            int[] gs=ctGraphicLayer.getGraphicIDs();
+            for(int i=0;i<gs.length;i++){
+                if(ctGraphicLayer.getGraphic(gs[i]).getAttributeValue("uid")==null){
+                    ctGraphicLayer.removeGraphic(gs[i]);
+                }
             }
         }
+
     }
 
     private void SetUIDNullGraphics(String UID){
-        HashMap<String, Object> attribute = new HashMap<String, Object>();
-        attribute.put("uid", UID);
-        int[] gs=ctGraphicLayer.getGraphicIDs();
-        for(int i=0;i<gs.length;i++){
-            if(ctGraphicLayer.getGraphic(gs[i]).getAttributeValue("uid")==null){
-                ctGraphicLayer.updateGraphic(gs[i],attribute);
+        if(ctGraphicLayer.getNumberOfGraphics()>0){
+            HashMap<String, Object> attribute = new HashMap<String, Object>();
+            attribute.put("uid", UID);
+            int[] gs=ctGraphicLayer.getGraphicIDs();
+            for(int i=0;i<gs.length;i++){
+                if(ctGraphicLayer.getGraphic(gs[i]).getAttributeValue("uid")==null){
+                    ctGraphicLayer.updateGraphic(gs[i],attribute);
+                }
             }
         }
+
+
     }
 
     private boolean CheckUIDGraphicExits(String UID){
